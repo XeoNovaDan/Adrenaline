@@ -18,9 +18,9 @@ namespace Adrenaline
 
         private const int MinTicksSinceDamageTakenForAdrenalineFall = 600;
 
-        private const float BaseSeverityGainPerDamageTaken = 0.01f;
+        private const float BaseSeverityGainPerDamageTaken = 0.005f;
 
-        private const float BaseSeverityGainPerHour = 0.3f;
+        private const float BaseSeverityGainPerHour = 0.15f;
 
         private const float BaseSeverityLossPerHour = 0.5f;
 
@@ -43,10 +43,10 @@ namespace Adrenaline
 
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
         {
-            // Update cached hostile attack searchers
             var map = pawn.Map;
             if (map != null)
             {
+                // Get all pawns and things (e.g. turrets) that are perceived as threats by the pawn
                 var perceivedThreats = map.GetComponent<MapComponent_AdrenalineCache>().allPotentialHostileThings?.Where(t => t.IsPerceivedThreatBy(pawn));
 
                 // Apply adrenaline if there are any hostile things
@@ -58,11 +58,12 @@ namespace Adrenaline
 
                     float severityToAdd = BaseSeverityGainPerHour / GenDate.TicksPerHour * severityMultiplier * GenTicks.TicksPerRealSecond;
                     HealthUtility.AdjustSeverity(pawn, hediff, severityToAdd);
+                    return;
                 }
             }
 
             // Otherwise reduce severity if it has been at least 600 ticks since the pawn was last harmed
-            else if (Find.TickManager.TicksGame >= pawn.mindState.lastHarmTick + MinTicksSinceDamageTakenForAdrenalineFall)
+            if (Find.TickManager.TicksGame >= pawn.mindState.lastHarmTick + MinTicksSinceDamageTakenForAdrenalineFall)
             {
                 float severityToRemove = BaseSeverityLossPerHour / GenDate.TicksPerHour * GenTicks.TicksPerRealSecond;
                 HealthUtility.AdjustSeverity(pawn, hediff, -severityToRemove);

@@ -6,7 +6,7 @@
         <label>adrenaline rush</label>
         <workerClass>ThoughtWorker_Hediff</workerClass>
         <validWhileDespawned>true</validWhileDespawned>
-        <hediff>AdrenalineRush</hediff>
+        <hediff>Adrenaline</hediff>
         <requiredTraits>
             <li>AdrenalineJunkie</li>
         </requiredTraits>
@@ -19,25 +19,25 @@
             <li>
                 <label>slight adrenaline rush</label>
                 <description>My heart's starting to get pumping and I'm raring to go.</description>
-                <baseMoodEffect>3</baseMoodEffect>
+                <baseMoodEffect>4</baseMoodEffect>
             </li>
 
             <li>
                 <label>moderate adrenaline rush</label>
                 <description>This is some good action right here, give me more!</description>
-                <baseMoodEffect>5</baseMoodEffect>
-            </li>
-
-            <li>
-                <label>intense adrenaline rush</label>
-                <description>I can feel my hands shaking and my blood rushing through my head!</description>
                 <baseMoodEffect>8</baseMoodEffect>
             </li>
 
             <li>
-                <label>extreme adrenaline rush</label>
-                <description>This is absolutely wild! It feels like my heart is going to explode!</description>
+                <label>intense adrenaline rush</label>
+                <description>This action is intense! I can feel my hands shaking and blood rushing through my head!</description>
                 <baseMoodEffect>12</baseMoodEffect>
+            </li>
+
+            <li>
+                <label>extreme adrenaline rush</label>
+                <description>I feel unstoppable! My heart is pumping so much that it feels like it could explode at any moment!</description>
+                <baseMoodEffect>18</baseMoodEffect>
             </li>
 
         </stages>

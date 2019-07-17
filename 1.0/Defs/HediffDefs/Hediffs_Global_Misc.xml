@@ -45,6 +45,10 @@
                         <capacity>Moving</capacity>
                         <offset>0.1</offset>
                     </li>
+                    <li>
+                        <capacity>Manipulation</capacity>
+                        <offset>0.1</offset>
+                    </li>
                 </capMods>
                 <painFactor>0.88</painFactor>
             </li>
@@ -65,6 +69,10 @@
                         <capacity>Moving</capacity>
                         <offset>0.15</offset>
                     </li>
+                    <li>
+                        <capacity>Manipulation</capacity>
+                        <offset>0.15</offset>
+                    </li>
                 </capMods>
                 <painFactor>0.8</painFactor>
             </li>
@@ -83,6 +91,10 @@
                     </li>
                     <li>
                         <capacity>Moving</capacity>
+                        <offset>0.2</offset>
+                    </li>
+                    <li>
+                        <capacity>Manipulation</capacity>
                         <offset>0.2</offset>
                     </li>
                 </capMods>
