@@ -72,9 +72,9 @@ namespace Adrenaline
 
         public override bool OnHediffAdded(Pawn pawn, Hediff hediff)
         {
-            // Hediff isn't an injury or the pawn is dead
+            // Hediff isn't an injury, is a scar or the pawn is dead
             var injury = hediff as Hediff_Injury;
-            if (injury == null || pawn.Dead)
+            if (injury == null || injury.IsPermanent() || pawn.Dead)
                 return false;
 
             float severityToAdd = BaseSeverityGainPerDamageTaken * injury.Severity / pawn.HealthScale;
