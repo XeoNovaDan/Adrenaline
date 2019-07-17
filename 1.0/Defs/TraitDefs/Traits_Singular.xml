@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <TraitDef>
+        <defName>AdrenalineJunkie</defName>
+        <commonality>1.1</commonality>
+        <degreeDatas>
+            <li>
+                <label>adrenaline junkie</label>
+                <description>{PAWN_nameDef} lives for the thrill of the action. {PAWN_pronoun} gets a rush from the adrenaline that flows throughout {PAWN_possessive} veins.</description>
+            </li>
+        </degreeDatas>
+    </TraitDef>
+
+</Defs>

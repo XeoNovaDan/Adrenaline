@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <ThoughtDef>
+        <defName>AdrenalineHigh</defName>
+        <label>adrenaline rush</label>
+        <workerClass>ThoughtWorker_Hediff</workerClass>
+        <validWhileDespawned>true</validWhileDespawned>
+        <hediff>AdrenalineRush</hediff>
+        <requiredTraits>
+            <li>AdrenalineJunkie</li>
+        </requiredTraits>
+        <stages>
+
+            <li>
+                <visible>false</visible>
+            </li>
+
+            <li>
+                <label>slight adrenaline rush</label>
+                <description>My heart's starting to get pumping and I'm raring to go.</description>
+                <baseMoodEffect>3</baseMoodEffect>
+            </li>
+
+            <li>
+                <label>moderate adrenaline rush</label>
+                <description>This is some good action right here, give me more!</description>
+                <baseMoodEffect>5</baseMoodEffect>
+            </li>
+
+            <li>
+                <label>intense adrenaline rush</label>
+                <description>I can feel my hands shaking and my blood rushing through my head!</description>
+                <baseMoodEffect>8</baseMoodEffect>
+            </li>
+
+            <li>
+                <label>extreme adrenaline rush</label>
+                <description>This is absolutely wild! It feels like my heart is going to explode!</description>
+                <baseMoodEffect>12</baseMoodEffect>
+            </li>
+
+        </stages>
+    </ThoughtDef>
+
+</Defs>

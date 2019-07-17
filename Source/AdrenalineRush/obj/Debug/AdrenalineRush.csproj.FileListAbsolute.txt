@@ -1,0 +1,4 @@
+E:\Documents\GitHub\AdrenalineRush\1.0\Assemblies\AdrenalineRush.dll
+E:\Documents\GitHub\AdrenalineRush\Source\AdrenalineRush\obj\Debug\AdrenalineRush.csprojAssemblyReference.cache
+E:\Documents\GitHub\AdrenalineRush\Source\AdrenalineRush\obj\Debug\AdrenalineRush.csproj.CoreCompileInputs.cache
+E:\Documents\GitHub\AdrenalineRush\Source\AdrenalineRush\obj\Debug\AdrenalineRush.dll
