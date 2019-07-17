@@ -41,7 +41,6 @@ namespace Adrenaline
         {
             if (!cachedPotentialHostileThings.Contains(t))
             {
-                Log.Message($"Adding {t} to cache");
                 cachedPotentialHostileThings.Add(t);
             }    
         }
@@ -50,24 +49,16 @@ namespace Adrenaline
         {
             if (cachedPotentialHostileThings.Contains(t))
             {
-                Log.Message($"Removing {t} from cache");
                 cachedPotentialHostileThings.Remove(t);
             } 
         }
 
         private void ResetCachedPotentialHostileThings()
         {
-            Log.Message("Resetting cache");
             cachedPotentialHostileThings.Clear();
             foreach (var thing in map.listerThings.AllThings)
                 if (thing.IsPotentialPerceivableThreat())
                     TryAddToCache(thing);
-        }
-
-        public override void ExposeData()
-        {
-            //Scribe_Values.Look(ref cacheSet, "cacheSet");
-            //Scribe_Collections.Look(ref cachedPotentialHostileThings, "cachedPotentialHostileThings", LookMode.Deep);
         }
 
         private List<Thing> cachedPotentialHostileThings = new List<Thing>();

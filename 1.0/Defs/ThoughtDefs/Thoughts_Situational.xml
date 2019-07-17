@@ -2,7 +2,7 @@
 <Defs>
 
     <ThoughtDef>
-        <defName>AdrenalineHigh</defName>
+        <defName>AdrenalineRush</defName>
         <label>adrenaline rush</label>
         <workerClass>ThoughtWorker_Hediff</workerClass>
         <validWhileDespawned>true</validWhileDespawned>

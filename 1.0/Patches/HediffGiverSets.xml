@@ -5,7 +5,7 @@
         <xpath>/Defs/HediffGiverSetDef[defName="OrganicStandard"]/hediffGivers</xpath>
         <value>
             <li Class="Adrenaline.HediffGiver_Adrenaline">
-                <hediff>AdrenalineRush</hediff>
+                <hediff>Adrenaline</hediff>
             </li>
         </value>
     </Operation>

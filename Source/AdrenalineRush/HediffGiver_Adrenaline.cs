@@ -24,50 +24,7 @@ namespace Adrenaline
 
         private const float BaseSeverityLossPerHour = 0.5f;
 
-        private float HostileThingTotalEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t =>
-        {
-            // Pawn
-            if (t is Pawn p)
-            {
-                // If the pawn is a colonist, return the maximum of the kindDef's combatPower rating or the points per colonist based on the wealth of the player's wealthiest settlement
-                if (p.IsColonist)
-                {
-                    var pawnIncidentTarget = Current.Game.World.worldObjects.Settlements.Where(s => s.HasMap && s.Map.IsPlayerHome).MaxBy(s => s.Map.PlayerWealthForStoryteller).Map;
-                    return Mathf.Max(PointsPerColonistByWealthCurve.Evaluate(pawnIncidentTarget.PlayerWealthForStoryteller), p.kindDef.combatPower);
-                }
-
-                return p.kindDef.combatPower;
-            }
-
-            // Turret
-            if (t is Building_Turret turret)
-            {
-                // Return 1/10th of its base market value
-                return turret.def.GetStatValueAbstract(StatDefOf.MarketValue, null) / 10;
-            }
-
-            throw new NotImplementedException();
-        });
-
-        private static readonly SimpleCurve PointsPerColonistByWealthCurve = new SimpleCurve // Copy-pasted from StorytellerUtility
-        {
-            {
-                new CurvePoint(0f, 15f),
-                true
-            },
-            {
-                new CurvePoint(10000f, 15f),
-                true
-            },
-            {
-                new CurvePoint(400000f, 140f),
-                true
-            },
-            {
-                new CurvePoint(1000000f, 200f),
-                true
-            }
-        };
+        private float HostileThingTotalRelativeEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t => pawn.EffectiveCombatPower() / t.EffectiveCombatPower());
 
         private float HostileThingTotalRelativeBodySize(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t =>
         {
@@ -78,14 +35,7 @@ namespace Adrenaline
             throw new NotImplementedException();
         });
 
-        private static readonly SimpleCurve TotalCombatPowerToAdrenalineGainFactor = new SimpleCurve()
-        {
-            new CurvePoint(0, 0),
-            new CurvePoint(25, 0.35f),
-            new CurvePoint(150, 1),
-        };
-
-        private static readonly SimpleCurve TotalRelativeBodySizeToAdrenalineGainFactor = new SimpleCurve()
+        private static readonly SimpleCurve TotalRelativeScoreToAdrenalineGainFactorCurve = new SimpleCurve()
         {
             new CurvePoint(0, 0),
             new CurvePoint(1, 1)
@@ -103,8 +53,8 @@ namespace Adrenaline
                 if (perceivedThreats != null && perceivedThreats.Any())
                 {
                     float severityMultiplier = pawn.RaceProps.Humanlike ?
-                        TotalCombatPowerToAdrenalineGainFactor.Evaluate(HostileThingTotalEffectiveCombatPower(perceivedThreats, pawn)) :
-                        TotalRelativeBodySizeToAdrenalineGainFactor.Evaluate(HostileThingTotalRelativeBodySize(perceivedThreats, pawn));
+                        TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(HostileThingTotalRelativeEffectiveCombatPower(perceivedThreats, pawn)) :
+                        TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(HostileThingTotalRelativeBodySize(perceivedThreats, pawn));
 
                     float severityToAdd = BaseSeverityGainPerHour / GenDate.TicksPerHour * severityMultiplier * GenTicks.TicksPerRealSecond;
                     HealthUtility.AdjustSeverity(pawn, hediff, severityToAdd);

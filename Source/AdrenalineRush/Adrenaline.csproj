@@ -52,7 +52,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="A_HediffDefOf.cs" />
+    <Compile Include="A_TraitDefOf.cs" />
     <Compile Include="AdrenalineUtility.cs" />
+    <Compile Include="HarmonyPatches\Patch_VerbProperties.cs" />
+    <Compile Include="HarmonyPatches\Patch_TraitSet.cs" />
     <Compile Include="HarmonyPatches\Patch_Thing.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="MapComponent_AdrenalineCache.cs" />

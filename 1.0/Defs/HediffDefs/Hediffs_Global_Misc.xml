@@ -2,8 +2,8 @@
 <Defs>
 
     <HediffDef>
-        <defName>AdrenalineRush</defName>
-        <label>adrenaline rush</label>
+        <defName>Adrenaline</defName>
+        <label>adrenaline</label>
         <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
         <maxSeverity>1</maxSeverity>
         <stages>
