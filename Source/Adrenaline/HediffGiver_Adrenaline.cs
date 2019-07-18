@@ -20,13 +20,13 @@ namespace Adrenaline
         private float maxSeverityForGainOverTime = Int32.MaxValue;
         private int minTicksSinceSeverityGainForSeverityLoss;
 
-        private float HostileThingTotalRelativeEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t => pawn.EffectiveCombatPower() / t.EffectiveCombatPower());
+        private float HostileThingTotalRelativeEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t => t.EffectiveCombatPower() / pawn.EffectiveCombatPower());
 
         private float HostileThingTotalRelativeBodySize(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t =>
         {
             if (t is Pawn p)
             {
-                return pawn.BodySize / p.BodySize;
+                return p.BodySize / pawn.BodySize;
             }
             throw new NotImplementedException();
         });
