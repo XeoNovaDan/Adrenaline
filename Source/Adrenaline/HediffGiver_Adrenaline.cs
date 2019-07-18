@@ -14,9 +14,11 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
-        private const float BaseSeverityGainPerDamageTaken = 0.02f;
+        private const float BaseSeverityGainPerDamageTaken = 0.008f;
 
-        private const float BaseSeverityGainPerHour = 0.4f;
+        private const float BaseSeverityGainPerHour = 0.2f;
+
+        private const float SeverityGainOverTimeFactorDowned = 0.5f;
 
         private float HostileThingTotalRelativeEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t => t.EffectiveCombatPower() / pawn.EffectiveCombatPower());
 
@@ -55,12 +57,13 @@ namespace Adrenaline
                     if (perceivedThreats != null && perceivedThreats.Any())
                     {
                         float relativeScore = pawn.RaceProps.Humanlike ?
-                            HostileThingTotalRelativeEffectiveCombatPower(perceivedThreats, pawn) :
-                            HostileThingTotalRelativeBodySize(perceivedThreats, pawn);
+                            HostileThingTotalRelativeEffectiveCombatPower(perceivedThreats, pawn) : // Factor total relative combat power (Humanlike)
+                            HostileThingTotalRelativeBodySize(perceivedThreats, pawn); // Factor total relative body size (Animal)
 
-                        float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour *
-                            extraRaceProps.adrenalineGainFactor *
-                            TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(relativeScore) *
+                        float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour * // Base
+                            extraRaceProps.adrenalineGainFactor * // From DefModExtension
+                            TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(relativeScore) * // From perceived threats
+                            (pawn.Downed ? SeverityGainOverTimeFactorDowned : 1) * // From downed state
                             HealthTuning.HediffGiverUpdateInterval;
 
                         HealthUtility.AdjustSeverity(pawn, hediff, severityGain);
