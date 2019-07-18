@@ -60,11 +60,15 @@ namespace Adrenaline
                     // Apply adrenaline if there are any hostile things
                     if (perceivedThreats != null && perceivedThreats.Any())
                     {
-                        float severityMultiplier = pawn.RaceProps.Humanlike ?
-                            TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(HostileThingTotalRelativeEffectiveCombatPower(perceivedThreats, pawn)) :
-                            TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(HostileThingTotalRelativeBodySize(perceivedThreats, pawn));
+                        float relativeScore = pawn.RaceProps.Humanlike ?
+                            HostileThingTotalRelativeEffectiveCombatPower(perceivedThreats, pawn) :
+                            HostileThingTotalRelativeBodySize(perceivedThreats, pawn);
 
-                        float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour * extraRaceProps.adrenalineGainFactor * severityMultiplier * GenTicks.TicksPerRealSecond;
+                        float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour *
+                            extraRaceProps.adrenalineGainFactor *
+                            TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(relativeScore) *
+                            GenTicks.TicksPerRealSecond;
+
                         HealthUtility.AdjustSeverity(pawn, hediff, severityGain);
                         adrenalineComp.lastAdrenalineGainTick = Find.TickManager.TicksGame;
                         return;
