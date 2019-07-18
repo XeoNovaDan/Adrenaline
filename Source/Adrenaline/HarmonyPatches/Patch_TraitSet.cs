@@ -25,7 +25,7 @@ namespace Adrenaline
             public static bool Prefix(TraitSet __instance, Pawn ___pawn, Trait trait)
             {
                 // If the trait in question is Adrenaline junkie and the none of the pawn's hediff givers include adrenaline, reject it
-                if (trait.def == A_TraitDefOf.AdrenalineJunkie && !___pawn.RaceProps.hediffGiverSets.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))))
+                if (trait.def == A_TraitDefOf.AdrenalineJunkie && !___pawn.CanGetAdrenaline())
                     return false;
 
                 return true;

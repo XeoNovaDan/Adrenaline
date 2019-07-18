@@ -25,7 +25,7 @@ namespace Adrenaline
             public static void Postfix(Thing __instance)
             {
                 if (__instance.Map != null && __instance.IsPotentialPerceivableThreat())
-                    __instance.Map.GetComponent<MapComponent_AdrenalineCache>().TryAddToCache(__instance);
+                    __instance.Map.GetComponent<MapComponent_AdrenalineTracker>().TryAddToCache(__instance);
             }
 
         }
@@ -38,7 +38,7 @@ namespace Adrenaline
             public static void Prefix(Thing __instance)
             {
                 if (__instance.Map != null && __instance.IsPotentialPerceivableThreat())
-                    __instance.Map.GetComponent<MapComponent_AdrenalineCache>().TryRemoveFromCache(__instance);
+                    __instance.Map.GetComponent<MapComponent_AdrenalineTracker>().TryRemoveFromCache(__instance);
             }
 
         }

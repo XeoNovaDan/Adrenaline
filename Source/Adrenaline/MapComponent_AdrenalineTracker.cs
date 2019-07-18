@@ -11,13 +11,13 @@ using RimWorld.Planet;
 namespace Adrenaline
 {
 
-    public class MapComponent_AdrenalineCache : MapComponent
+    public class MapComponent_AdrenalineTracker : MapComponent
     {
 
         private bool cacheSet;
         private const int AllPotentialHostileThingsUpdateInterval = 120;
 
-        public MapComponent_AdrenalineCache(Map map) : base(map)
+        public MapComponent_AdrenalineTracker(Map map) : base(map)
         {
             this.map = map;
         }

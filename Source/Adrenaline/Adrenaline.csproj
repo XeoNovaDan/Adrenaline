@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="DefOf\A_HediffDefOf.cs" />
     <Compile Include="DefOf\A_TraitDefOf.cs" />
     <Compile Include="AdrenalineUtility.cs" />
@@ -59,7 +60,8 @@
     <Compile Include="HarmonyPatches\Patch_TraitSet.cs" />
     <Compile Include="HarmonyPatches\Patch_Thing.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
-    <Compile Include="MapComponent_AdrenalineCache.cs" />
+    <Compile Include="CompAdrenalineTracker.cs" />
+    <Compile Include="MapComponent_AdrenalineTracker.cs" />
     <Compile Include="HediffGiver_Adrenaline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

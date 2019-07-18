@@ -7,6 +7,8 @@ using Verse;
 using Verse.AI;
 using RimWorld;
 using RimWorld.Planet;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Adrenaline
 {
@@ -38,17 +40,18 @@ namespace Adrenaline
 
         public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn)
         {
-            // Not spawned, fogged or too far away to be perceived as a threat
-            if (!t.Spawned || t.Position.Fogged(t.Map) || t.Position.DistanceTo(pawn.Position) > MaxPerceivedThreatDistance)
+            // Not spawned or no line of sight
+            //if (!t.Spawned || t.Position.Fogged(t.Map) || t.Position.DistanceTo(pawn.Position) > MaxPerceivedThreatDistance)
+            if (!t.Spawned || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, validator: (c) => pawn.Position.DistanceTo(c) <= MaxPerceivedThreatDistance))
                 return false;
 
             // Pawn
             if (t is Pawn p)
             {
-                return !p.Downed && p.HostileTo(pawn);
+                return !p.Downed && (p.HostileTo(pawn) || pawn.InCombatWith(p) || p.InCombatWith(pawn));
             }
 
-            // Turret (if pawn's humanlike)
+            // Turret (if pawn is humanlike)
             if (pawn.RaceProps.Humanlike)
             {
                 if (t is Building_Turret turret)
@@ -69,6 +72,8 @@ namespace Adrenaline
 
             return false;
         }
+
+        public static bool InCombatWith(this Pawn pawn, Pawn p) => pawn.IsFighting() && pawn.CurJob.AnyTargetIs(p);
 
         public static bool IsPotentialPerceivableThreat(this Thing t)
         {
@@ -100,6 +105,10 @@ namespace Adrenaline
             throw new NotImplementedException($"Unaccounted effective combat power calculation for {t} (Type={t.GetType().Name})");
 
         }
+
+        public static bool CanGetAdrenaline(this Pawn p) => p.def.CanGetAdrenaline();
+
+        public static bool CanGetAdrenaline(this ThingDef tDef) => tDef.race != null && (tDef.race.hediffGiverSets?.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))) ?? false);
 
     }
 

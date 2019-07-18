@@ -5,7 +5,7 @@
         <defName>Adrenaline</defName>
         <label>adrenaline</label>
         <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
-        <maxSeverity>1</maxSeverity>
+        <maxSeverity>2</maxSeverity>
         <stages>
 
             <li>
@@ -15,7 +15,7 @@
 
             <li>
                 <label>slight</label>
-                <minSeverity>0.05</minSeverity>
+                <minSeverity>0.1</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -31,7 +31,7 @@
 
             <li>
                 <label>moderate</label>
-                <minSeverity>0.12</minSeverity>
+                <minSeverity>0.3</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -55,7 +55,7 @@
 
             <li>
                 <label>intense</label>
-                <minSeverity>0.25</minSeverity>
+                <minSeverity>0.6</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -79,7 +79,7 @@
 
             <li>
                 <label>extreme</label>
-                <minSeverity>0.5</minSeverity>
+                <minSeverity>1</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>

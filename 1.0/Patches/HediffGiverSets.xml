@@ -6,6 +6,11 @@
         <value>
             <li Class="Adrenaline.HediffGiver_Adrenaline">
                 <hediff>Adrenaline</hediff>
+                <baseSeverityGainPerDamageTaken>0.02</baseSeverityGainPerDamageTaken>
+                <baseSeverityGainPerHour>0.6</baseSeverityGainPerHour>
+                <baseSeverityLossPerHour>1</baseSeverityLossPerHour>
+                <maxSeverityForGainOverTime>0.8</maxSeverityForGainOverTime>
+                <minTicksSinceSeverityGainForSeverityLoss>600</minTicksSinceSeverityGainForSeverityLoss>
             </li>
         </value>
     </Operation>
