@@ -24,8 +24,21 @@
             <drugCategory>Medical</drugCategory>
             <ingestHoldOffsetStanding>
                 <northDefault>
-                    <offset>(0.18,0,0)</offset>
+                    <offset>(0.30,0,0.15)</offset>
+                    <behind>true</behind>
+                    <flip>true</flip>
                 </northDefault>
+                <east>
+                    <offset>(0.20,0,0)</offset>
+                    <behind>true</behind>
+                    <flip>true</flip>
+                </east>
+                <south>
+                    <offset>(-0.15,0,-0.15)</offset>
+                </south>
+                <west>
+                    <offset>(-0.20,0,-0.20)</offset>
+                </west>
             </ingestHoldOffsetStanding>
             <ingestCommandString>Inject {0}</ingestCommandString>
             <ingestReportString>Injecting {0}.</ingestReportString>
