@@ -16,13 +16,7 @@ namespace Adrenaline
 
         private const float BaseSeverityGainPerDamageTaken = 0.02f;
 
-        private const float BaseSeverityGainPerHour = 0.6f;
-
-        private const float BaseSeverityLossPerHour = 1;
-
-        private const float MaxSeverityForGainOverTime = 0.8f;
-
-        private const int MinTicksSinceSeverityGainForSeverityLoss = 600;
+        private const float BaseSeverityGainPerHour = 0.4f;
 
         private float HostileThingTotalRelativeEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t => t.EffectiveCombatPower() / pawn.EffectiveCombatPower());
 
@@ -38,7 +32,9 @@ namespace Adrenaline
         private static readonly SimpleCurve TotalRelativeScoreToAdrenalineGainFactorCurve = new SimpleCurve()
         {
             new CurvePoint(0, 0),
-            new CurvePoint(1, 1)
+            new CurvePoint(1, 1),
+            new CurvePoint(2, 1),
+            new CurvePoint(4, 2)
         };
 
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
@@ -47,12 +43,10 @@ namespace Adrenaline
 
             if (extraRaceProps.HasAdrenaline)
             {
-                var adrenalineComp = pawn.GetComp<CompAdrenalineTracker>();
                 var map = pawn.Map;
-                var adrenalineHediff = pawn.health.hediffSet.GetFirstHediffOfDef(hediff);
 
-                // If the pawn isn't a world or caravan pawn and either doesn't have the adrenaline hediff or it can still passively gain...
-                if (map != null && (adrenalineHediff == null || adrenalineHediff.Severity < MaxSeverityForGainOverTime))
+                // If the pawn isn't a world or caravan pawn...
+                if (map != null)
                 {
                     // Get all pawns and things (e.g. turrets) that are perceived as threats by the pawn
                     var perceivedThreats = map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings?.Where(t => t.IsPerceivedThreatBy(pawn));
@@ -67,19 +61,10 @@ namespace Adrenaline
                         float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour *
                             extraRaceProps.adrenalineGainFactor *
                             TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(relativeScore) *
-                            GenTicks.TicksPerRealSecond;
+                            HealthTuning.HediffGiverUpdateInterval;
 
                         HealthUtility.AdjustSeverity(pawn, hediff, severityGain);
-                        adrenalineComp.lastAdrenalineGainTick = Find.TickManager.TicksGame;
-                        return;
                     }
-                }
-
-                // Otherwise reduce severity if it has been at least 600 ticks since the pawn was last harmed
-                if (Find.TickManager.TicksGame >= adrenalineComp.lastAdrenalineGainTick + MinTicksSinceSeverityGainForSeverityLoss)
-                {
-                    float severityLoss = BaseSeverityLossPerHour / GenDate.TicksPerHour * extraRaceProps.adrenalineLossFactor * GenTicks.TicksPerRealSecond;
-                    HealthUtility.AdjustSeverity(pawn, hediff, -severityLoss);
                 }
             }
         }
@@ -97,7 +82,6 @@ namespace Adrenaline
 
                 float severityToAdd = BaseSeverityGainPerDamageTaken * extraRaceProps.adrenalineGainFactor * injury.Severity / pawn.HealthScale;
                 HealthUtility.AdjustSeverity(pawn, this.hediff, severityToAdd);
-                pawn.GetComp<CompAdrenalineTracker>().lastAdrenalineGainTick = Find.TickManager.TicksGame;
                 return true;
             }
 

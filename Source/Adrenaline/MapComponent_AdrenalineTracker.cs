@@ -33,7 +33,7 @@ namespace Adrenaline
 
             if (Find.TickManager.TicksGame % AllPotentialHostileThingsUpdateInterval == 0)
             {
-                allPotentialHostileThings = map.mapPawns.AllPawnsSpawned.ToArray().Concat(cachedPotentialHostileThings).ToList();
+                allPotentialHostileThings = new HashSet<Thing>(map.mapPawns.AllPawnsSpawned.ToArray().Concat(cachedPotentialHostileThings));
             }
         }
 
@@ -61,9 +61,9 @@ namespace Adrenaline
                     TryAddToCache(thing);
         }
 
-        private List<Thing> cachedPotentialHostileThings = new List<Thing>();
+        private HashSet<Thing> cachedPotentialHostileThings = new HashSet<Thing>();
 
-        public List<Thing> allPotentialHostileThings = new List<Thing>();
+        public HashSet<Thing> allPotentialHostileThings = new HashSet<Thing>();
 
 
     }

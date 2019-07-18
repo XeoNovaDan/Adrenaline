@@ -4,10 +4,10 @@
     <ThingDef ParentName="MakeableDrugBase">
         <defName>Adrenaline</defName>
         <label>adrenaline</label>
-        <description>Adrenaline is a hormone that is typically naturally secreted in fight-or-flight situations - though synthesised in this case. Adrenaline primarily promotes blood flow to the muscles and dulls any pain that the user experiences.</description>
+        <description>Adrenaline is a hormone that is typically released in fight-or-flight situations - though synthesised in this case. Adrenaline primarily promotes blood flow to the muscles and dulls any pain that the user experiences.\n\nToo much adrenaline can potentially cause heart attacks.</description>
         <graphicData>
             <texPath>Things/Item/Drug/Adrenaline</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
+            <graphicClass>Graphic_StackCount</graphicClass>
         </graphicData>
         <socialPropernessMatters>false</socialPropernessMatters>
         <rotatable>false</rotatable>
@@ -50,7 +50,7 @@
         </costList>
         <comps>
             <li Class="CompProperties_Drug">
-                <listOrder>1000</listOrder>
+                <listOrder>990</listOrder>
             </li>
         </comps>
     </ThingDef>

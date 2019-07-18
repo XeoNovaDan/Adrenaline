@@ -48,7 +48,7 @@ namespace Adrenaline
             // Pawn
             if (t is Pawn p)
             {
-                return !p.Downed && (p.HostileTo(pawn) || pawn.InCombatWith(p) || p.InCombatWith(pawn));
+                return !p.Downed && (p.HostileTo(pawn) || pawn.InCombatWith(p));
             }
 
             // Turret (if pawn is humanlike)

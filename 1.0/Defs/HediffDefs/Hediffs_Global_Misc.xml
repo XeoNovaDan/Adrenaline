@@ -4,6 +4,7 @@
     <HediffDef>
         <defName>Adrenaline</defName>
         <label>adrenaline</label>
+        <hediffClass>Adrenaline.Hediff_Adrenaline</hediffClass>
         <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
         <maxSeverity>2</maxSeverity>
         <stages>
@@ -15,14 +16,22 @@
 
             <li>
                 <label>slight</label>
-                <minSeverity>0.1</minSeverity>
+                <minSeverity>0.05</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
                         <offset>0.15</offset>
                     </li>
                     <li>
+                        <capacity>Breathing</capacity>
+                        <offset>0.1</offset>
+                    </li>
+                    <li>
                         <capacity>Moving</capacity>
+                        <offset>0.05</offset>
+                    </li>
+                    <li>
+                        <capacity>Sight</capacity>
                         <offset>0.05</offset>
                     </li>
                 </capMods>
@@ -39,7 +48,7 @@
                     </li>
                     <li>
                         <capacity>Breathing</capacity>
-                        <offset>0.1</offset>
+                        <offset>0.15</offset>
                     </li>
                     <li>
                         <capacity>Moving</capacity>
@@ -47,6 +56,10 @@
                     </li>
                     <li>
                         <capacity>Manipulation</capacity>
+                        <offset>0.1</offset>
+                    </li>
+                    <li>
+                        <capacity>Sight</capacity>
                         <offset>0.1</offset>
                     </li>
                 </capMods>
@@ -73,6 +86,10 @@
                         <capacity>Manipulation</capacity>
                         <offset>0.15</offset>
                     </li>
+                    <li>
+                        <capacity>Sight</capacity>
+                        <offset>0.15</offset>
+                    </li>
                 </capMods>
                 <painFactor>0.8</painFactor>
             </li>
@@ -96,6 +113,10 @@
                     <li>
                         <capacity>Manipulation</capacity>
                         <offset>0.2</offset>
+                    </li>
+                    <li>
+                        <capacity>Sight</capacity>
+                        <offset>0.15</offset>
                     </li>
                 </capMods>
                 <hediffGivers>

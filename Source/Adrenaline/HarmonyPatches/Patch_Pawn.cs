@@ -25,14 +25,14 @@ namespace Adrenaline
             public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
             {
                 // If the pawn is downed, is a colonist and can take adrenaline, add a 'take adrenaline' gizmo
-                if (__instance.Downed && __instance.IsColonistPlayerControlled && __instance.def.CanGetAdrenaline())
+                if (__instance.Downed && __instance.IsColonistPlayerControlled && __instance.CanGetAdrenaline())
                 {
                     var adrenalineCells = __instance.CellsAdjacent8WayAndInside().Where(c => c.GetFirstThing(__instance.Map, A_ThingDefOf.Adrenaline) != null);
                     var adrenalineGizmo = new Command_Action()
                     {
                         defaultLabel = "Adrenaline.Command_TakeAdrenaline".Translate(),
                         defaultDesc = "Adrenaline.Command_TakeAdrenaline_Description".Translate(),
-                        icon = ContentFinder<Texture2D>.Get(A_ThingDefOf.Adrenaline.graphicData.texPath),
+                        icon = A_TexCommand.Adrenaline,
                         action = () => adrenalineCells.First().GetFirstThing(__instance.Map, A_ThingDefOf.Adrenaline).Ingested(__instance, 0)
                     };
 
@@ -42,7 +42,7 @@ namespace Adrenaline
 
                     // Can't do manipulation
                     else if (!__instance.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
-                        adrenalineGizmo.Disable("Adrenaline.Command_TakeAdrenaline_FailNoManipulation".Translate());
+                        adrenalineGizmo.Disable("Adrenaline.Command_TakeAdrenaline_FailNoManipulation".Translate(__instance.LabelShort));
 
                     __result = __result.Add(adrenalineGizmo);
                 }
