@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef ParentName="MakeableDrugBase">
+        <defName>Adrenaline</defName>
+        <label>adrenaline</label>
+        <description>Adrenaline is a hormone that is typically naturally secreted in fight-or-flight situations - though synthesised in this case. Adrenaline primarily promotes blood flow to the muscles and dulls any pain that the user experiences.</description>
+        <graphicData>
+            <texPath>Things/Item/Drug/Adrenaline</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+        </graphicData>
+        <socialPropernessMatters>false</socialPropernessMatters>
+        <rotatable>false</rotatable>
+        <statBases>
+            <WorkToMake>600</WorkToMake>
+            <MarketValue>18</MarketValue>
+            <Mass>0.1</Mass>
+        </statBases>
+        <techLevel>Industrial</techLevel>
+        <ingestible>
+            <foodType>Processed, Fluid</foodType>
+            <baseIngestTicks>90</baseIngestTicks>
+            <ingestSound>Ingest_Inject</ingestSound>
+            <drugCategory>Medical</drugCategory>
+            <ingestHoldOffsetStanding>
+                <northDefault>
+                    <offset>(0.18,0,0)</offset>
+                </northDefault>
+            </ingestHoldOffsetStanding>
+            <ingestCommandString>Inject {0}</ingestCommandString>
+            <ingestReportString>Injecting {0}.</ingestReportString>
+            <useEatingSpeedStat>false</useEatingSpeedStat>
+            <chairSearchRadius>0</chairSearchRadius>
+            <outcomeDoers>
+                <li Class="IngestionOutcomeDoer_GiveHediff">
+                    <hediffDef>Adrenaline</hediffDef>
+                    <severity>0.45</severity>
+                    <divideByBodySize>true</divideByBodySize>
+                </li>
+            </outcomeDoers>
+        </ingestible>
+        <recipeMaker>
+            <researchPrerequisite>PenoxycylineProduction</researchPrerequisite>
+            <recipeUsers>
+                <li>DrugLab</li>
+            </recipeUsers>
+        </recipeMaker>
+        <costList>
+            <Neutroamine>2</Neutroamine>
+        </costList>
+        <comps>
+            <li Class="CompProperties_Drug">
+                <listOrder>1000</listOrder>
+            </li>
+        </comps>
+    </ThingDef>
+
+</Defs>

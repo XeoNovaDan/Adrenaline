@@ -52,7 +52,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefOf\A_ThingDefOf.cs" />
     <Compile Include="ExtraRaceProperties.cs" />
+    <Compile Include="HarmonyPatches\Patch_Pawn.cs" />
     <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="DefOf\A_HediffDefOf.cs" />
     <Compile Include="DefOf\A_TraitDefOf.cs" />
