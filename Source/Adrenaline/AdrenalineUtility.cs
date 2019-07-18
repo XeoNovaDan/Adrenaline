@@ -108,7 +108,11 @@ namespace Adrenaline
 
         public static bool CanGetAdrenaline(this Pawn p) => p.def.CanGetAdrenaline();
 
-        public static bool CanGetAdrenaline(this ThingDef tDef) => tDef.race != null && (tDef.race.hediffGiverSets?.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))) ?? false);
+        public static bool CanGetAdrenaline(this ThingDef tDef)
+        {
+            var extraRaceProps = tDef.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
+            return tDef.race != null && extraRaceProps.HasAdrenaline && (tDef.race.hediffGiverSets?.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))) ?? false);
+        } 
 
     }
 

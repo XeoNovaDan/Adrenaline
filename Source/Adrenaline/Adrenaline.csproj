@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtraRaceProperties.cs" />
     <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="DefOf\A_HediffDefOf.cs" />
     <Compile Include="DefOf\A_TraitDefOf.cs" />
