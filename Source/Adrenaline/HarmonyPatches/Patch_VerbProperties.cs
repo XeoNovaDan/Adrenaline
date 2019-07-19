@@ -33,9 +33,6 @@ namespace Adrenaline
                     {
                         switch (adrenalineHediff.CurStageIndex)
                         {
-                            case 0: // Slight (hidden)
-                                return;
-
                             case 1: // Slight
                                 return;
 

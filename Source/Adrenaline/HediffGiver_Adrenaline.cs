@@ -61,7 +61,7 @@ namespace Adrenaline
                             HostileThingTotalRelativeBodySize(perceivedThreats, pawn); // Factor total relative body size (Animal)
 
                         float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour * // Base
-                            extraRaceProps.adrenalineGainFactor * // From DefModExtension
+                            extraRaceProps.adrenalineGainFactorNatural * // From DefModExtension
                             TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(relativeScore) * // From perceived threats
                             (pawn.Downed ? SeverityGainOverTimeFactorDowned : 1) * // From downed state
                             HealthTuning.HediffGiverUpdateInterval;
@@ -83,7 +83,7 @@ namespace Adrenaline
                 if (injury == null || injury.IsPermanent() || pawn.Dead)
                     return false;
 
-                float severityToAdd = BaseSeverityGainPerDamageTaken * extraRaceProps.adrenalineGainFactor * injury.Severity / pawn.HealthScale;
+                float severityToAdd = BaseSeverityGainPerDamageTaken * extraRaceProps.adrenalineGainFactorNatural * injury.Severity / pawn.HealthScale;
                 HealthUtility.AdjustSeverity(pawn, this.hediff, severityToAdd);
                 return true;
             }

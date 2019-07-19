@@ -16,11 +16,13 @@ namespace Adrenaline
 
         public static readonly ExtraRaceProperties defaultValues = new ExtraRaceProperties();
 
-        public float adrenalineGainFactor = 1;
+        public float adrenalineGainFactorNatural = 1;
+
+        public float adrenalineGainFactorArtificial = 1;
 
         public float adrenalineLossFactor = 1;
 
-        public bool HasAdrenaline => adrenalineGainFactor > 0;
+        public bool HasAdrenaline => adrenalineGainFactorNatural > 0 || adrenalineGainFactorArtificial > 0;
 
 
     }
