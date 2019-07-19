@@ -48,6 +48,7 @@
                 <li Class="Adrenaline.IngestionOutcomeDoer_Adrenaline">
                     <hediffDef>Adrenaline</hediffDef>
                     <severity>0.6</severity>
+                    <divideByBodySize>true</divideByBodySize>
                 </li>
             </outcomeDoers>
         </ingestible>
