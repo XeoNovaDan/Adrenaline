@@ -33,18 +33,18 @@ namespace Adrenaline
                     {
                         switch (adrenalineHediff.CurStageIndex)
                         {
-                            case 1: // Slight
+                            case 0: // Slight
                                 return;
 
-                            case 2: // Moderate
+                            case 1: // Moderate
                                 __result *= 1.1f;
                                 return;
 
-                            case 3: // Intense
+                            case 2: // Intense
                                 __result *= 1.2f;
                                 return;
 
-                            case 4: // Extreme
+                            case 3: // Extreme
                                 __result *= 1.3f;
                                 return;
 
