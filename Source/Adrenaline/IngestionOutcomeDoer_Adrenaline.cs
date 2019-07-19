@@ -27,6 +27,10 @@ namespace Adrenaline
             {
                 num = this.hediffDef.initialSeverity;
             }
+            if (this.divideByBodySize)
+            {
+                num /= pawn.BodySize;
+            }
 
             // Multiply by the pawn's adrenaline resistance
             var extraRaceProps = pawn.def.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
@@ -51,6 +55,8 @@ namespace Adrenaline
         public HediffDef hediffDef;
 
         public float severity = -1f;
+
+        private bool divideByBodySize;
 
     }
     // Okay, you got me... :(
