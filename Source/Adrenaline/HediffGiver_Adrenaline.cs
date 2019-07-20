@@ -14,9 +14,9 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
-        private const float BaseSeverityGainPerDamageTaken = 0.008f;
+        private const float BaseSeverityGainPerDamageTaken = 0.004f;
 
-        private const float BaseSeverityGainPerHour = 0.2f;
+        private const float BaseSeverityGainPerHour = 0.1f;
 
         private const float SeverityGainOverTimeFactorDowned = 0.5f;
 
@@ -35,7 +35,6 @@ namespace Adrenaline
         {
             new CurvePoint(0, 0),
             new CurvePoint(1, 1),
-            new CurvePoint(2, 1),
             new CurvePoint(4, 2)
         };
 

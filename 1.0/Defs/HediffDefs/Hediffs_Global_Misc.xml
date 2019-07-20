@@ -6,7 +6,7 @@
         <label>adrenaline</label>
         <hediffClass>Adrenaline.Hediff_Adrenaline</hediffClass>
         <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
-        <maxSeverity>2</maxSeverity>
+        <maxSeverity>1</maxSeverity>
         <stages>
 
             <li>
@@ -34,7 +34,7 @@
 
             <li>
                 <label>moderate</label>
-                <minSeverity>0.2</minSeverity>
+                <minSeverity>0.1</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -62,7 +62,7 @@
 
             <li>
                 <label>intense</label>
-                <minSeverity>0.4</minSeverity>
+                <minSeverity>0.2</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -90,7 +90,7 @@
 
             <li>
                 <label>extreme</label>
-                <minSeverity>1</minSeverity>
+                <minSeverity>0.5</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
