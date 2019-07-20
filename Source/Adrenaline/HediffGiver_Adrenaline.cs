@@ -35,7 +35,6 @@ namespace Adrenaline
         {
             new CurvePoint(0, 0),
             new CurvePoint(1, 1),
-            new CurvePoint(2, 1),
             new CurvePoint(4, 2)
         };
 
