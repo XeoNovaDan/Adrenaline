@@ -3,7 +3,7 @@
 
     <HediffDef>
         <defName>Adrenaline</defName>
-        <label>adrenaline</label>
+        <label>adrenaline rush</label>
         <hediffClass>Adrenaline.Hediff_Adrenaline</hediffClass>
         <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
         <maxSeverity>1</maxSeverity>
@@ -19,6 +19,10 @@
                     <li>
                         <capacity>Breathing</capacity>
                         <offset>0.1</offset>
+                    </li>
+                    <li>
+                        <capacity>Consciousness</capacity>
+                        <offset>0.05</offset>
                     </li>
                     <li>
                         <capacity>Moving</capacity>
@@ -38,18 +42,18 @@
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
-                        <offset>0.3</offset>
+                        <offset>0.2</offset>
                     </li>
                     <li>
                         <capacity>Breathing</capacity>
                         <offset>0.15</offset>
                     </li>
                     <li>
-                        <capacity>Moving</capacity>
+                        <capacity>Consciousness</capacity>
                         <offset>0.1</offset>
                     </li>
                     <li>
-                        <capacity>Manipulation</capacity>
+                        <capacity>Moving</capacity>
                         <offset>0.1</offset>
                     </li>
                     <li>
@@ -66,18 +70,18 @@
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
-                        <offset>0.5</offset>
+                        <offset>0.3</offset>
                     </li>
                     <li>
                         <capacity>Breathing</capacity>
                         <offset>0.2</offset>
                     </li>
                     <li>
-                        <capacity>Moving</capacity>
+                        <capacity>Consciousness</capacity>
                         <offset>0.15</offset>
                     </li>
                     <li>
-                        <capacity>Manipulation</capacity>
+                        <capacity>Moving</capacity>
                         <offset>0.15</offset>
                     </li>
                     <li>
@@ -94,23 +98,23 @@
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
-                        <offset>0.8</offset>
+                        <offset>0.5</offset>
                     </li>
                     <li>
                         <capacity>Breathing</capacity>
                         <offset>0.25</offset>
                     </li>
                     <li>
+                        <capacity>Consciousness</capacity>
+                        <offset>0.2</offset>
+                    </li>
+                    <li>
                         <capacity>Moving</capacity>
                         <offset>0.2</offset>
                     </li>
                     <li>
-                        <capacity>Manipulation</capacity>
-                        <offset>0.2</offset>
-                    </li>
-                    <li>
                         <capacity>Sight</capacity>
-                        <offset>0.15</offset>
+                        <offset>0.2</offset>
                     </li>
                 </capMods>
                 <hediffGivers>
@@ -123,6 +127,90 @@
                     </li>
                 </hediffGivers>
                 <painFactor>0.65</painFactor>
+            </li>
+
+        </stages>
+    </HediffDef>
+
+    <HediffDef>
+        <defName>AdrenalineCrash</defName>
+        <label>adrenaline crash</label>
+        <hediffClass>Adrenaline.Hediff_AdrenalineCrash</hediffClass>
+        <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
+        <maxSeverity>1</maxSeverity>
+        <stages>
+
+            <li>
+                <label>trivial</label>
+                <becomeVisible>false</becomeVisible>
+            </li>
+
+            <li>
+                <label>minor</label>
+                <minSeverity>0.01</minSeverity>
+                <capMods>
+                    <li>
+                        <capacity>Consciousness</capacity>
+                        <offset>0.15</offset>
+                    </li>
+                </capMods>
+                <statOffsets>
+                    <MentalBreakThreshold>0.02</MentalBreakThreshold>
+                </statOffsets>
+                <restFallFactorOffset>0.1</restFallFactorOffset>
+                <hungerRateFactorOffset>0.05</hungerRateFactorOffset>
+                <vomitMtbDays>5</vomitMtbDays>
+            </li>
+
+            <li>
+                <label>moderate</label>
+                <minSeverity>0.1</minSeverity>
+                <capMods>
+                    <li>
+                        <capacity>Consciousness</capacity>
+                        <offset>0.2</offset>
+                    </li>
+                </capMods>
+                <statOffsets>
+                    <MentalBreakThreshold>0.04</MentalBreakThreshold>
+                </statOffsets>
+                <restFallFactorOffset>0.3</restFallFactorOffset>
+                <hungerRateFactorOffset>0.1</hungerRateFactorOffset>
+                <vomitMtbDays>3</vomitMtbDays>
+            </li>
+
+            <li>
+                <label>severe</label>
+                <minSeverity>0.2</minSeverity>
+                <capMods>
+                    <li>
+                        <capacity>Consciousness</capacity>
+                        <offset>0.3</offset>
+                    </li>
+                </capMods>
+                <statOffsets>
+                    <MentalBreakThreshold>0.06</MentalBreakThreshold>
+                </statOffsets>
+                <restFallFactorOffset>0.6</restFallFactorOffset>
+                <hungerRateFactorOffset>0.2</hungerRateFactorOffset>
+                <vomitMtbDays>2</vomitMtbDays>
+            </li>
+
+            <li>
+                <label>extreme</label>
+                <minSeverity>0.5</minSeverity>
+                <capMods>
+                    <li>
+                        <capacity>Consciousness</capacity>
+                        <setMax>0.5</setMax>
+                    </li>
+                </capMods>
+                <statOffsets>
+                    <MentalBreakThreshold>0.08</MentalBreakThreshold>
+                </statOffsets>
+                <restFallFactorOffset>1</restFallFactorOffset>
+                <hungerRateFactorOffset>0.3</hungerRateFactorOffset>
+                <vomitMtbDays>1</vomitMtbDays>
             </li>
 
         </stages>

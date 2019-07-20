@@ -18,6 +18,8 @@ namespace Adrenaline
 
         private const float MaxPerceivedThreatDistance = 50;
 
+        private const float ThreatSignificanceFactorDowned = 0.5f;
+
         private static readonly SimpleCurve PointsPerColonistByWealthCurve = new SimpleCurve // Copy-pasted from StorytellerUtility
         {
             {
@@ -38,7 +40,7 @@ namespace Adrenaline
             }
         };
 
-        public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn)
+        public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn, bool ignoreDownedState = false)
         {
             // Not spawned, too far away from or not visible to the pawn in question
             if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > MaxPerceivedThreatDistance || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, true))
@@ -47,11 +49,11 @@ namespace Adrenaline
             // Pawn
             if (t is Pawn p)
             {
-                return !p.Downed && (p.HostileTo(pawn) || pawn.InCombatWith(p));
+                return (ignoreDownedState || !p.Downed) && (p.HostileTo(pawn) || pawn.InCombatWith(p));
             }
 
-            // Turret (if pawn is humanlike)
-            if (pawn.RaceProps.Humanlike)
+            // Turret (if pawn is not an animal)
+            if (!pawn.RaceProps.Animal)
             {
                 if (t is Building_Turret turret)
                 {
@@ -77,6 +79,21 @@ namespace Adrenaline
         public static bool IsPotentialPerceivableThreat(this Thing t)
         {
             return t is Building_Turret;
+        }
+
+        public static float PerceivedThreatSignificanceFor(this Thing t, Pawn pawn)
+        {
+            // If the adrenaline gainee is an animal, only factor in the other thing's body size relative to the animal's body size
+            if (pawn.RaceProps.Animal)
+            {
+                if (t is Pawn p)
+                    return p.BodySize / pawn.BodySize;
+                throw new NotImplementedException();
+            }
+
+            // Otherwise factor in 'effective combat power'
+            else
+                return t.EffectiveCombatPower() / pawn.EffectiveCombatPower();
         }
 
         public static float EffectiveCombatPower(this Thing t)
@@ -111,7 +128,7 @@ namespace Adrenaline
         {
             var extraRaceProps = tDef.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
             return tDef.race != null && extraRaceProps.HasAdrenaline && (tDef.race.hediffGiverSets?.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))) ?? false);
-        } 
+        }
 
     }
 

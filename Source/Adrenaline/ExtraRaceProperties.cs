@@ -16,6 +16,8 @@ namespace Adrenaline
 
         public static readonly ExtraRaceProperties defaultValues = new ExtraRaceProperties();
 
+        public HediffDef adrenalineHediff = A_HediffDefOf.Adrenaline;
+
         public float adrenalineGainFactorNatural = 1;
 
         public float adrenalineGainFactorArtificial = 1;

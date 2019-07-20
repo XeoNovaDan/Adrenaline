@@ -14,24 +14,15 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
+        public const float BaseSeverityGainPerThreatNeutralised = 0.05f;
+
         private const float BaseSeverityGainPerDamageTaken = 0.004f;
 
         private const float BaseSeverityGainPerHour = 0.1f;
 
         private const float SeverityGainOverTimeFactorDowned = 0.5f;
 
-        private float HostileThingTotalRelativeEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t => t.EffectiveCombatPower() / pawn.EffectiveCombatPower());
-
-        private float HostileThingTotalRelativeBodySize(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t =>
-        {
-            if (t is Pawn p)
-            {
-                return p.BodySize / pawn.BodySize;
-            }
-            throw new NotImplementedException();
-        });
-
-        private static readonly SimpleCurve TotalRelativeScoreToAdrenalineGainFactorCurve = new SimpleCurve()
+        private static readonly SimpleCurve TotalPerceivedThreatSignificanceToAdrenalineGainFactorCurve = new SimpleCurve()
         {
             new CurvePoint(0, 0),
             new CurvePoint(1, 1),
@@ -52,20 +43,20 @@ namespace Adrenaline
                     // Get all pawns and things (e.g. turrets) that are perceived as threats by the pawn
                     var perceivedThreats = map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings?.Where(t => t.IsPerceivedThreatBy(pawn));
 
-                    // Apply adrenaline if there are any hostile things
+                    // Apply adrenaline if there are any perceived threats
                     if (perceivedThreats != null && perceivedThreats.Any())
                     {
-                        float relativeScore = pawn.RaceProps.Humanlike ?
-                            HostileThingTotalRelativeEffectiveCombatPower(perceivedThreats, pawn) : // Factor total relative combat power (Humanlike)
-                            HostileThingTotalRelativeBodySize(perceivedThreats, pawn); // Factor total relative body size (Animal)
+                        float totalPerceivedThreatSignificance = 0;
+                        foreach (var threat in perceivedThreats)
+                            totalPerceivedThreatSignificance += threat.PerceivedThreatSignificanceFor(pawn);
 
                         float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour * // Base
                             extraRaceProps.adrenalineGainFactorNatural * // From DefModExtension
-                            TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(relativeScore) * // From perceived threats
+                            TotalPerceivedThreatSignificanceToAdrenalineGainFactorCurve.Evaluate(totalPerceivedThreatSignificance) * // From perceived threats
                             (pawn.Downed ? SeverityGainOverTimeFactorDowned : 1) * // From downed state
                             HealthTuning.HediffGiverUpdateInterval;
 
-                        HealthUtility.AdjustSeverity(pawn, hediff, severityGain);
+                        HealthUtility.AdjustSeverity(pawn, extraRaceProps.adrenalineHediff, severityGain);
                     }
                 }
             }
@@ -83,7 +74,7 @@ namespace Adrenaline
                     return false;
 
                 float severityToAdd = BaseSeverityGainPerDamageTaken * extraRaceProps.adrenalineGainFactorNatural * injury.Severity / pawn.HealthScale;
-                HealthUtility.AdjustSeverity(pawn, this.hediff, severityToAdd);
+                HealthUtility.AdjustSeverity(pawn, extraRaceProps.adrenalineHediff, severityToAdd);
                 return true;
             }
 

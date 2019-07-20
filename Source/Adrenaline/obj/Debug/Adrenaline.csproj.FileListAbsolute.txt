@@ -1,7 +1,4 @@
-E:\Documents\GitHub\Adrenaline\Source\AdrenalineRush\obj\Debug\Adrenaline.csprojAssemblyReference.cache
-E:\Documents\GitHub\Adrenaline\Source\AdrenalineRush\obj\Debug\Adrenaline.csproj.CoreCompileInputs.cache
 E:\Documents\GitHub\Adrenaline\1.0\Assemblies\Adrenaline.dll
-E:\Documents\GitHub\Adrenaline\Source\AdrenalineRush\obj\Debug\Adrenaline.dll
 E:\Documents\GitHub\Adrenaline\Source\Adrenaline\obj\Debug\Adrenaline.csprojAssemblyReference.cache
 E:\Documents\GitHub\Adrenaline\Source\Adrenaline\obj\Debug\Adrenaline.csproj.CoreCompileInputs.cache
 E:\Documents\GitHub\Adrenaline\Source\Adrenaline\obj\Debug\Adrenaline.dll
