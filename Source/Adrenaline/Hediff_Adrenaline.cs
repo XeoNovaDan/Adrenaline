@@ -14,7 +14,7 @@ namespace Adrenaline
     public class Hediff_Adrenaline : HediffWithComps
     {
 
-        private const float BaseSeverityLossPerHour = 0.6f;
+        private const float BaseSeverityLossPerHour = 0.3f;
 
         private const int MinTicksSinceSeverityGainForSeverityLoss = 600;
 
