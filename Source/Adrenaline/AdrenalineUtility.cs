@@ -42,7 +42,7 @@ namespace Adrenaline
         {
             // Not spawned or no line of sight
             //if (!t.Spawned || t.Position.Fogged(t.Map) || t.Position.DistanceTo(pawn.Position) > MaxPerceivedThreatDistance)
-            if (!t.Spawned || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, validator: (c) => pawn.Position.DistanceTo(c) <= MaxPerceivedThreatDistance))
+            if (!t.Spawned || pawn.Position.DistanceTo(t.Position) > MaxPerceivedThreatDistance || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, true))
                 return false;
 
             // Pawn
