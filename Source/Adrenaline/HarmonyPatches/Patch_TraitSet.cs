@@ -24,8 +24,8 @@ namespace Adrenaline
 
             public static bool Prefix(TraitSet __instance, Pawn ___pawn, Trait trait)
             {
-                // If the trait in question is Adrenaline junkie and the none of the pawn's hediff givers include adrenaline, reject it
-                if (trait.def == A_TraitDefOf.AdrenalineJunkie && !___pawn.CanGetAdrenaline())
+                // If the trait in question is adrenaline-related and the pawn can't gain adrenaline, reject it
+                if ((trait.def == A_TraitDefOf.AdrenalineJunkie || trait.def == A_TraitDefOf.CoolHeaded) && !___pawn.CanGetAdrenaline())
                     return false;
 
                 return true;

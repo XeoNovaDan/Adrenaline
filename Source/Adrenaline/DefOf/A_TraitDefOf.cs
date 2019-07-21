@@ -16,6 +16,7 @@ namespace Adrenaline
     {
 
         public static TraitDef AdrenalineJunkie;
+        public static TraitDef CoolHeaded;
 
     }
 

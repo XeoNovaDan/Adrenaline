@@ -16,6 +16,7 @@ namespace Adrenaline
     {
 
         public static HediffDef Adrenaline;
+        public static HediffDef AdrenalineCrash;
 
     }
 

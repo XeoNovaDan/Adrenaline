@@ -16,7 +16,7 @@ namespace Adrenaline
     public static class AdrenalineUtility
     {
 
-        private const float MaxPerceivedThreatDistance = 50;
+        private const float BasePerceivedThreatDistance = 50;
 
         private static readonly SimpleCurve PointsPerColonistByWealthCurve = new SimpleCurve // Copy-pasted from StorytellerUtility
         {
@@ -38,20 +38,29 @@ namespace Adrenaline
             }
         };
 
-        public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn)
+        public static IEnumerable<Thing> GetPerceivedThreatsFor(Pawn pawn)
         {
-            // Not spawned, too far away from or not visible to the pawn in question
-            if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > MaxPerceivedThreatDistance || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, true))
+            if (pawn.Map == null)
+                yield break;
+
+            foreach (var threat in pawn.Map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings.Where(t => t.IsPerceivedThreatBy(pawn)))
+                yield return threat;
+        }
+
+        public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn, bool ignoreDownedState = false)
+        {
+            // Not spawned, fogged, too far away from the pawn in question or cannot see them
+            if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > BasePerceivedThreatDistance * pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight) || !AttackTargetFinder.CanSee(pawn, t))
                 return false;
 
             // Pawn
             if (t is Pawn p)
             {
-                return !p.Downed && (p.HostileTo(pawn) || pawn.InCombatWith(p));
+                return (ignoreDownedState || !p.Downed) && (p.HostileTo(pawn) || pawn.InCombatWith(p));
             }
 
-            // Turret (if pawn is humanlike)
-            if (pawn.RaceProps.Humanlike)
+            // Turret (if pawn is not an animal)
+            if (!pawn.RaceProps.Animal)
             {
                 if (t is Building_Turret turret)
                 {
@@ -79,19 +88,39 @@ namespace Adrenaline
             return t is Building_Turret;
         }
 
+        public static float PerceivedThreatSignificanceFor(this Thing t, Pawn pawn)
+        {
+            // If the adrenaline gainee is an animal, only factor in the other thing's body size relative to the animal's body size
+            if (pawn.RaceProps.Animal)
+            {
+                if (t is Pawn p)
+                    return p.BodySize / pawn.BodySize;
+                throw new NotImplementedException();
+            }
+
+            // Otherwise factor in 'effective combat power'
+            else
+                return t.EffectiveCombatPower() / pawn.EffectiveCombatPower();
+        }
+
         public static float EffectiveCombatPower(this Thing t)
         {
             // Pawn
             if (t is Pawn p)
             {
+                float combatPower;
+
                 // If the pawn is a colonist, return the maximum of the kindDef's combatPower rating or the points per colonist based on the wealth of the player's wealthiest settlement
                 if (p.IsColonist)
                 {
                     var pawnIncidentTarget = Current.Game.World.worldObjects.Settlements.Where(s => s.HasMap && s.Map.IsPlayerHome).MaxBy(s => s.Map.PlayerWealthForStoryteller).Map;
-                    return Mathf.Max(PointsPerColonistByWealthCurve.Evaluate(pawnIncidentTarget.PlayerWealthForStoryteller), p.kindDef.combatPower);
+                    combatPower =  Mathf.Max(PointsPerColonistByWealthCurve.Evaluate(pawnIncidentTarget.PlayerWealthForStoryteller), p.kindDef.combatPower);
                 }
 
-                return p.kindDef.combatPower;
+                else
+                    combatPower = p.kindDef.combatPower;
+
+                return combatPower * p.health.summaryHealth.SummaryHealthPercent;
             }
 
             // Turret
@@ -109,9 +138,9 @@ namespace Adrenaline
 
         public static bool CanGetAdrenaline(this ThingDef tDef)
         {
-            var extraRaceProps = tDef.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
+            var extraRaceProps = tDef.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
             return tDef.race != null && extraRaceProps.HasAdrenaline && (tDef.race.hediffGiverSets?.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))) ?? false);
-        } 
+        }
 
     }
 

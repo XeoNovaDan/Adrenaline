@@ -14,76 +14,43 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
-        private const float BaseSeverityGainPerDamageTaken = 0.004f;
-
-        private const float BaseSeverityGainPerHour = 0.1f;
-
-        private const float SeverityGainOverTimeFactorDowned = 0.5f;
-
-        private float HostileThingTotalRelativeEffectiveCombatPower(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t => t.EffectiveCombatPower() / pawn.EffectiveCombatPower());
-
-        private float HostileThingTotalRelativeBodySize(IEnumerable<Thing> hostileThings, Pawn pawn) => hostileThings.Sum(t =>
-        {
-            if (t is Pawn p)
-            {
-                return p.BodySize / pawn.BodySize;
-            }
-            throw new NotImplementedException();
-        });
-
-        private static readonly SimpleCurve TotalRelativeScoreToAdrenalineGainFactorCurve = new SimpleCurve()
-        {
-            new CurvePoint(0, 0),
-            new CurvePoint(1, 1),
-            new CurvePoint(4, 2)
-        };
+        private const float BaseSeverityGainPerDamageTaken = 0.005f;
 
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
         {
-            var extraRaceProps = pawn.def.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
+            var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
 
             if (extraRaceProps.HasAdrenaline)
             {
-                var map = pawn.Map;
+                var storyTracker = pawn.story;
+                bool hasRush = pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineRushHediff);
 
-                // If the pawn isn't a world or caravan pawn...
-                if (map != null)
-                {
-                    // Get all pawns and things (e.g. turrets) that are perceived as threats by the pawn
-                    var perceivedThreats = map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings?.Where(t => t.IsPerceivedThreatBy(pawn));
+                // If the pawn isn't cool-headed and doesn't already have an adrenaline rush, add adrenaline rush
+                if ((storyTracker == null || !storyTracker.traits.HasTrait(A_TraitDefOf.CoolHeaded)) && !hasRush && AdrenalineUtility.GetPerceivedThreatsFor(pawn).Any())
+                    pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff);
 
-                    // Apply adrenaline if there are any hostile things
-                    if (perceivedThreats != null && perceivedThreats.Any())
-                    {
-                        float relativeScore = pawn.RaceProps.Humanlike ?
-                            HostileThingTotalRelativeEffectiveCombatPower(perceivedThreats, pawn) : // Factor total relative combat power (Humanlike)
-                            HostileThingTotalRelativeBodySize(perceivedThreats, pawn); // Factor total relative body size (Animal)
+                // Otherwise if they have an adrenaline rush and don't have an adrenaline crash hediff, add an adrenaline crash hediff
+                else if (hasRush && extraRaceProps.adrenalineCrashHediff != null && !pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineCrashHediff))
+                    pawn.health.AddHediff(extraRaceProps.adrenalineCrashHediff);
 
-                        float severityGain = BaseSeverityGainPerHour / GenDate.TicksPerHour * // Base
-                            extraRaceProps.adrenalineGainFactorNatural * // From DefModExtension
-                            TotalRelativeScoreToAdrenalineGainFactorCurve.Evaluate(relativeScore) * // From perceived threats
-                            (pawn.Downed ? SeverityGainOverTimeFactorDowned : 1) * // From downed state
-                            HealthTuning.HediffGiverUpdateInterval;
-
-                        HealthUtility.AdjustSeverity(pawn, hediff, severityGain);
-                    }
-                }
             }
         }
 
         public override bool OnHediffAdded(Pawn pawn, Hediff hediff)
         {
-            var extraRaceProps = pawn.def.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
+            var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
 
             if (extraRaceProps.HasAdrenaline)
             {
-                // Hediff isn't an injury, is a scar or the pawn is dead
+                var storyTracker = pawn.story;
+
+                // Hediff isn't an injury, is a scar, the pawn is dead or the pawn has the 'cool-headed' trait
                 var injury = hediff as Hediff_Injury;
-                if (injury == null || injury.IsPermanent() || pawn.Dead)
+                if (injury == null || injury.IsPermanent() || pawn.Dead || (storyTracker != null && storyTracker.traits.HasTrait(A_TraitDefOf.CoolHeaded)))
                     return false;
 
                 float severityToAdd = BaseSeverityGainPerDamageTaken * extraRaceProps.adrenalineGainFactorNatural * injury.Severity / pawn.HealthScale;
-                HealthUtility.AdjustSeverity(pawn, this.hediff, severityToAdd);
+                HealthUtility.AdjustSeverity(pawn, extraRaceProps.adrenalineRushHediff, severityToAdd);
                 return true;
             }
 

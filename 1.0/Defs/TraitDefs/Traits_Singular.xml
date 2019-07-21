@@ -10,6 +10,23 @@
                 <description>{PAWN_nameDef} lives for the thrill of the action. {PAWN_pronoun} gets a rush from the adrenaline that flows throughout {PAWN_possessive} veins.</description>
             </li>
         </degreeDatas>
+        <conflictingTraits>
+            <li>CoolHeaded</li>
+        </conflictingTraits>
+    </TraitDef>
+
+    <TraitDef>
+        <defName>CoolHeaded</defName>
+        <commonality>1</commonality>
+        <degreeDatas>
+            <li>
+                <label>cool-headed</label>
+                <description>{PAWN_nameDef} tends to keep calm in heated situations and never gets an adrenaline rush from them.</description>
+            </li>
+        </degreeDatas>
+        <conflictingTraits>
+            <li>AdrenalineJunkie</li>
+        </conflictingTraits>
     </TraitDef>
 
 </Defs>

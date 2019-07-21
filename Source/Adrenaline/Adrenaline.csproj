@@ -53,8 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="A_TexCommand.cs" />
+    <Compile Include="Hediffs\Hediff_AdrenalineRush.cs" />
+    <Compile Include="Hediffs\Hediff_AdrenalineCrash.cs" />
     <Compile Include="IngestionOutcomeDoer_Adrenaline.cs" />
-    <Compile Include="Hediff_Adrenaline.cs" />
+    <Compile Include="Hediffs\Hediff_Adrenaline.cs" />
     <Compile Include="DefOf\A_ThingDefOf.cs" />
     <Compile Include="ExtraRaceProperties.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn.cs" />
