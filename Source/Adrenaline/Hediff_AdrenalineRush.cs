@@ -14,78 +14,100 @@ namespace Adrenaline
     public class Hediff_AdrenalineRush : Hediff_Adrenaline
     {
 
-        private const float BaseSeverityGainPerHour = 0.2f;
-        private const float BaseSeverityLossPerHour = 0.5f;
-        private const float GainableSeverityPerThreatSignificance = 0.3f;
-        private const float SeverityGainFactorPerCachedGainableSeverity = 5;
-        private const int ThreatSignificanceUpdateIntervalTicks = HealthTuning.HediffGiverUpdateInterval;
-        private const int MaxTicksWithoutPerceivedThreatsBeforeForcedSeverityLoss = 300;
-        private const int MinTicksSinceLastSeverityGainForSeverityLoss = 300;
+        #region Constants
+        private const int SeverityLossDelayTicks = 300;
+        private const float BaseAttainableSeverityPerPeakTotalThreatSignificance = 0.75f;
+        private const float BaseSeverityGainPerHour = 0.8f;
+        private const float BaseSeverityLossPerHour = 1.6f;
+        #endregion
 
-        private float threatSignificanceProcessedIntoSeverity;
-        private float peakTotalThreatSignificance;
-        private float peakTotalThreatSignificanceDeltaFromPrevious;
-        
-        private int ticksWithoutPerceivedThreats;
+        #region Fields
+        private float totalThreatSignificance; // Determines severity gain/loss rate
+        private float peakTotalThreatSignificance; // Determines attainable severity
+        private float totalSeverityGained;
+        private int ticksSinceLastSeverityGain;
+        #endregion
 
-        private float TotalThreatSignificance => pawn.Map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings.Where(t => t.IsPerceivedThreatBy(pawn)).Sum(t => t.PerceivedThreatSignificanceFor(pawn));
+        #region Properties
+        private float TotalAttainableSeverity
+        {
+            get
+            {
+                float baseAttainableSeverity = peakTotalThreatSignificance * BaseAttainableSeverityPerPeakTotalThreatSignificance;
+                if (baseAttainableSeverity <= 1)
+                    return baseAttainableSeverity;
 
-        private bool DropAdrenalineFromLackOfThreats => ticksWithoutPerceivedThreats > MaxTicksWithoutPerceivedThreatsBeforeForcedSeverityLoss;
+                // If the base attainable severity is more than 1, return the square root to prevent extreme values
+                return Mathf.Sqrt(baseAttainableSeverity);
+            }
+        }
+        private float AttainableSeverity => TotalAttainableSeverity - totalSeverityGained;
 
-        protected override bool CanGainSeverity => base.CanGainSeverity && !DropAdrenalineFromLackOfThreats;
-
-        protected override bool CanLoseSeverity => DropAdrenalineFromLackOfThreats || ticksSinceLastSeverityGain > MinTicksSinceLastSeverityGainForSeverityLoss;
+        private float SeverityAdjustCoefficient => Mathf.Max(0.2f, Mathf.Sqrt(totalThreatSignificance));
+        #endregion
 
         protected override void UpdateSeverity()
         {
-            if (CanGainSeverity)
+            // Gain severity if total severity gained is less than the attainable severity and any threats are present
+            if (totalSeverityGained < AttainableSeverity && totalThreatSignificance > 0)
             {
-                float severityToGain = Mathf.Min(gainableSeverity,
+                float severityToGain = Mathf.Min(AttainableSeverity, 
                     BaseSeverityGainPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
-                    ExtraRaceProps.adrenalineGainFactorNatural * // From extra race props
-                    Mathf.Sqrt(cachedGainableSeverity) // From cached gainable severity
-                    );
+                    ExtraRaceProps.adrenalineGainFactorNatural * // From extra race properties
+                    SeverityAdjustCoefficient); // From threats
 
-                GainSeverityFromTick(severityToGain);
+                Severity += severityToGain;
+                totalSeverityGained += severityToGain;
+                ticksSinceLastSeverityGain = 0;
             }
-            else if(CanLoseSeverity)
+
+            // Otherwise drop severity if it has been at least 300 ticks since the last gain
+            else
             {
-                Severity -= BaseSeverityLossPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
-                    ExtraRaceProps.adrenalineLossFactor; // From extra race props
+                if (ticksSinceLastSeverityGain > SeverityLossDelayTicks)
+                {
+                    float severityToLose = BaseSeverityLossPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
+                        ExtraRaceProps.adrenalineLossFactor / // From extra race properties
+                        SeverityAdjustCoefficient; // From threats
+
+                    Severity -= severityToLose;
+                }
+
+                else
+                    ticksSinceLastSeverityGain += SeverityUpdateIntervalTicks;
             }
-            base.UpdateSeverity();
+            
         }
 
         public override void Tick()
         {
-            // Update threat significance every 60 ticks since it's computationally expensive
-            if (pawn.Map != null && ageTicks % ThreatSignificanceUpdateIntervalTicks == 0)
+            // Update peak total threat significance
+            if (ageTicks % HealthTuning.HediffGiverUpdateInterval == 0)
             {
-                // Update peak total threat significance
-                float totalThreatSignificance = TotalThreatSignificance; // A bid to reduce performance costs
+                totalThreatSignificance = AdrenalineUtility.GetPerceivedThreatsFor(pawn).Sum(t => t.PerceivedThreatSignificanceFor(pawn));
                 if (totalThreatSignificance > peakTotalThreatSignificance)
-                {
-                    ticksWithoutPerceivedThreats = 0;
-                    peakTotalThreatSignificanceDeltaFromPrevious = totalThreatSignificance - peakTotalThreatSignificance;
                     peakTotalThreatSignificance = totalThreatSignificance;
-
-                    GainableSeverity += peakTotalThreatSignificanceDeltaFromPrevious * GainableSeverityPerThreatSignificance;
-                }
-                else if (totalThreatSignificance == 0)
-                {
-                    ticksWithoutPerceivedThreats += ThreatSignificanceUpdateIntervalTicks;
-                }
             }
 
             base.Tick();
         }
 
+        public override string DebugString()
+        {
+            var debugBuilder = new StringBuilder();
+            debugBuilder.AppendLine($"total severity gained: {totalSeverityGained}".Indented("    "));
+            debugBuilder.AppendLine($"attainable severity: {AttainableSeverity}".Indented("    "));
+            debugBuilder.AppendLine($"severity adjust coefficient: {SeverityAdjustCoefficient}".Indented("    "));
+            debugBuilder.AppendLine(base.DebugString());
+            return debugBuilder.ToString();
+        }
+
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref threatSignificanceProcessedIntoSeverity, "threatSignificanceProcessedIntoSeverity");
-            Scribe_Values.Look(ref peakTotalThreatSignificanceDeltaFromPrevious, "peakTotalThreatSignificanceDeltaFromPrevious");
+            Scribe_Values.Look(ref totalThreatSignificance, "totalThreatSignificance");
             Scribe_Values.Look(ref peakTotalThreatSignificance, "peakTotalThreatSignificance");
-            Scribe_Values.Look(ref ticksWithoutPerceivedThreats, "ticksWithoutPerceivedThreats");
+            Scribe_Values.Look(ref totalSeverityGained, "totalSeverityGained");
+            Scribe_Values.Look(ref ticksSinceLastSeverityGain, "ticksSinceLastSeverityGain");
 
             base.ExposeData();
         }

@@ -39,7 +39,7 @@
 
             <li>
                 <label>moderate</label>
-                <minSeverity>0.1</minSeverity>
+                <minSeverity>0.25</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -67,7 +67,7 @@
 
             <li>
                 <label>intense</label>
-                <minSeverity>0.2</minSeverity>
+                <minSeverity>0.5</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -95,7 +95,7 @@
 
             <li>
                 <label>extreme</label>
-                <minSeverity>0.5</minSeverity>
+                <minSeverity>0.75</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -138,18 +138,18 @@
         <label>adrenaline crash</label>
         <hediffClass>Adrenaline.Hediff_AdrenalineCrash</hediffClass>
         <defaultLabelColor>(0.6, 0.4, 0.4)</defaultLabelColor>
-        <maxSeverity>1</maxSeverity>
         <initialSeverity>0</initialSeverity>
+        <maxSeverity>1</maxSeverity>
         <stages>
 
             <li>
-                <label>trivial</label>
+                <label>minor</label>
                 <becomeVisible>false</becomeVisible>
             </li>
 
             <li>
                 <label>minor</label>
-                <minSeverity>0.2</minSeverity>
+                <minSeverity>0.001</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
@@ -166,7 +166,7 @@
 
             <li>
                 <label>moderate</label>
-                <minSeverity>0.4</minSeverity>
+                <minSeverity>0.25</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
@@ -183,7 +183,7 @@
 
             <li>
                 <label>severe</label>
-                <minSeverity>0.6</minSeverity>
+                <minSeverity>0.5</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
@@ -200,7 +200,7 @@
 
             <li>
                 <label>extreme</label>
-                <minSeverity>0.8</minSeverity>
+                <minSeverity>0.75</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>

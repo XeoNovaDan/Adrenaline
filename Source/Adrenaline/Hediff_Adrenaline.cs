@@ -13,41 +13,12 @@ namespace Adrenaline
 
     public abstract class Hediff_Adrenaline : HediffWithComps
     {
+
         protected const int SeverityUpdateIntervalTicks = 20;
-
-        protected float gainableSeverity;
-        protected float cachedGainableSeverity; // Exists to determine the rate at which severity increases
-        protected int ticksSinceLastSeverityGain;
-
-        protected float GainableSeverity
-        {
-            get => gainableSeverity;
-            set
-            {
-                gainableSeverity = value;
-                cachedGainableSeverity = value;
-            }
-        }
 
         protected ExtendedRaceProperties ExtraRaceProps => pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
 
-        protected virtual bool CanGainSeverity => GainableSeverity > 0;
-
-        protected virtual bool CanLoseSeverity => true;
-
-        protected void GainSeverityFromTick(float sevOffset)
-        {
-            Severity += sevOffset;
-            gainableSeverity -= sevOffset;
-        }
-
-        protected virtual void UpdateSeverity()
-        {
-            if (CanGainSeverity)
-                ticksSinceLastSeverityGain = 0;
-            else
-                ticksSinceLastSeverityGain += SeverityUpdateIntervalTicks;
-        }
+        protected abstract void UpdateSeverity();
 
         public override void Tick()
         {
@@ -55,24 +26,6 @@ namespace Adrenaline
                 UpdateSeverity();
 
             base.Tick();
-        }
-
-        public override string DebugString()
-        {
-            var debugBuilder = new StringBuilder();
-            debugBuilder.AppendLine($"gainableSeverity: {gainableSeverity}".Indented("    "));
-            debugBuilder.AppendLine($"cachedGainableSeverity: {cachedGainableSeverity}".Indented("    "));
-            debugBuilder.AppendLine(base.DebugString());
-            return debugBuilder.ToString();
-        }
-
-        public override void ExposeData()
-        {
-            Scribe_Values.Look(ref gainableSeverity, "gainableSeverity");
-            Scribe_Values.Look(ref cachedGainableSeverity, "cachedGainableSeverity");
-            Scribe_Values.Look(ref ticksSinceLastSeverityGain, "ticksSinceLastSeverityGain");
-
-            base.ExposeData();
         }
 
     }

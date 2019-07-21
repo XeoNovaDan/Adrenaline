@@ -22,28 +22,16 @@ namespace Adrenaline
 
             if (extraRaceProps.HasAdrenaline)
             {
-                var map = pawn.Map;
                 var storyTracker = pawn.story;
                 bool hasRush = pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineRushHediff);
 
-                // If the pawn isn't a world or caravan pawn, isn't cool-headed and doesn't already have an adrenaline rush...
-                if (map != null && (pawn.story == null || !pawn.story.traits.HasTrait(A_TraitDefOf.CoolHeaded)) && !hasRush)
-                {
-                    // Get all pawns and things (e.g. turrets) that are perceived as threats by the pawn
-                    var perceivedThreats = map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings?.Where(t => t.IsPerceivedThreatBy(pawn));
-
-                    // Apply adrenaline if there are any perceived threats
-                    if (perceivedThreats != null && perceivedThreats.Any())
-                    {
-                        pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff);
-                    }
-                }
+                // If the pawn isn't cool-headed and doesn't already have an adrenaline rush, add adrenaline rush
+                if ((storyTracker == null || !storyTracker.traits.HasTrait(A_TraitDefOf.CoolHeaded)) && !hasRush && AdrenalineUtility.GetPerceivedThreatsFor(pawn).Any())
+                    pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff);
 
                 // Otherwise if they have an adrenaline rush and don't have an adrenaline crash hediff, add an adrenaline crash hediff
                 else if (hasRush && extraRaceProps.adrenalineCrashHediff != null && !pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineCrashHediff))
-                {
                     pawn.health.AddHediff(extraRaceProps.adrenalineCrashHediff);
-                }
 
             }
         }
@@ -54,9 +42,11 @@ namespace Adrenaline
 
             if (extraRaceProps.HasAdrenaline)
             {
-                // Hediff isn't an injury, is a scar or the pawn is dead
+                var storyTracker = pawn.story;
+
+                // Hediff isn't an injury, is a scar, the pawn is dead or the pawn has the 'cool-headed' trait
                 var injury = hediff as Hediff_Injury;
-                if (injury == null || injury.IsPermanent() || pawn.Dead)
+                if (injury == null || injury.IsPermanent() || pawn.Dead || (storyTracker != null && storyTracker.traits.HasTrait(A_TraitDefOf.CoolHeaded)))
                     return false;
 
                 float severityToAdd = BaseSeverityGainPerDamageTaken * extraRaceProps.adrenalineGainFactorNatural * injury.Severity / pawn.HealthScale;

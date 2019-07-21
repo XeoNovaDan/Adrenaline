@@ -38,6 +38,15 @@ namespace Adrenaline
             }
         };
 
+        public static IEnumerable<Thing> GetPerceivedThreatsFor(Pawn pawn)
+        {
+            if (pawn.Map == null)
+                yield break;
+
+            foreach (var threat in pawn.Map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings.Where(t => t.IsPerceivedThreatBy(pawn)))
+                yield return threat;
+        }
+
         public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn, bool ignoreDownedState = false)
         {
             // Not spawned, too far away from or not visible to the pawn in question
