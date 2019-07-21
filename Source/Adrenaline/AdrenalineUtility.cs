@@ -41,7 +41,7 @@ namespace Adrenaline
         public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn, bool ignoreDownedState = false)
         {
             // Not spawned, too far away from or not visible to the pawn in question
-            if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > BasePerceivedThreatDistance * pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight) || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, true))
+            if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > BasePerceivedThreatDistance * pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight))
                 return false;
 
             // Pawn

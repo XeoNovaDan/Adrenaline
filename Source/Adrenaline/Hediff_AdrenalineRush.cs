@@ -30,9 +30,11 @@ namespace Adrenaline
 
         private float TotalThreatSignificance => pawn.Map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings.Where(t => t.IsPerceivedThreatBy(pawn)).Sum(t => t.PerceivedThreatSignificanceFor(pawn));
 
-        protected override bool CanGainSeverity => base.CanGainSeverity && ticksWithoutPerceivedThreats <= MaxTicksWithoutPerceivedThreatsBeforeForcedSeverityLoss;
+        private bool DropAdrenalineFromLackOfThreats => ticksWithoutPerceivedThreats > MaxTicksWithoutPerceivedThreatsBeforeForcedSeverityLoss;
 
-        protected override bool CanLoseSeverity => ticksSinceLastSeverityGain > MinTicksSinceLastSeverityGainForSeverityLoss;
+        protected override bool CanGainSeverity => base.CanGainSeverity && !DropAdrenalineFromLackOfThreats;
+
+        protected override bool CanLoseSeverity => DropAdrenalineFromLackOfThreats || ticksSinceLastSeverityGain > MinTicksSinceLastSeverityGainForSeverityLoss;
 
         protected override void UpdateSeverity()
         {
@@ -41,19 +43,15 @@ namespace Adrenaline
                 float severityToGain = Mathf.Min(gainableSeverity,
                     BaseSeverityGainPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
                     ExtraRaceProps.adrenalineGainFactorNatural * // From extra race props
-                    (cachedGainableSeverity * SeverityGainFactorPerCachedGainableSeverity) // From cached gainable severity
+                    Mathf.Sqrt(cachedGainableSeverity) // From cached gainable severity
                     );
 
                 GainSeverityFromTick(severityToGain);
             }
-            else
+            else if(CanLoseSeverity)
             {
-                ticksSinceLastSeverityGain += SeverityUpdateIntervalTicks;
-                if (CanLoseSeverity)
-                {
-                    Severity -= BaseSeverityLossPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
-                        ExtraRaceProps.adrenalineLossFactor; // From extra race props
-                }
+                Severity -= BaseSeverityLossPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
+                    ExtraRaceProps.adrenalineLossFactor; // From extra race props
             }
             base.UpdateSeverity();
         }

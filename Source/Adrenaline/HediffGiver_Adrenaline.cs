@@ -23,10 +23,11 @@ namespace Adrenaline
             if (extraRaceProps.HasAdrenaline)
             {
                 var map = pawn.Map;
+                var storyTracker = pawn.story;
                 bool hasRush = pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineRushHediff);
 
-                // If the pawn isn't a world or caravan pawn and doesn't already have an adrenaline rush...
-                if (map != null && !pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineRushHediff))
+                // If the pawn isn't a world or caravan pawn, isn't cool-headed and doesn't already have an adrenaline rush...
+                if (map != null && (pawn.story == null || !pawn.story.traits.HasTrait(A_TraitDefOf.CoolHeaded)) && !hasRush)
                 {
                     // Get all pawns and things (e.g. turrets) that are perceived as threats by the pawn
                     var perceivedThreats = map.GetComponent<MapComponent_AdrenalineTracker>().allPotentialHostileThings?.Where(t => t.IsPerceivedThreatBy(pawn));

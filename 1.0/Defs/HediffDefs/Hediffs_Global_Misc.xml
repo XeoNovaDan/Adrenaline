@@ -170,7 +170,7 @@
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>-0.2</offset>
+                        <offset>-0.15</offset>
                     </li>
                 </capMods>
                 <statOffsets>
@@ -187,7 +187,7 @@
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>-0.3</offset>
+                        <offset>-0.2</offset>
                     </li>
                 </capMods>
                 <statOffsets>
@@ -204,7 +204,7 @@
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <setMax>0.5</setMax>
+                        <offset>-0.3</offset>
                     </li>
                 </capMods>
                 <statOffsets>

@@ -38,7 +38,7 @@ namespace Adrenaline
         protected void GainSeverityFromTick(float sevOffset)
         {
             Severity += sevOffset;
-            GainableSeverity -= sevOffset;
+            gainableSeverity -= sevOffset;
         }
 
         protected virtual void UpdateSeverity()
@@ -55,6 +55,15 @@ namespace Adrenaline
                 UpdateSeverity();
 
             base.Tick();
+        }
+
+        public override string DebugString()
+        {
+            var debugBuilder = new StringBuilder();
+            debugBuilder.AppendLine($"gainableSeverity: {gainableSeverity}".Indented("    "));
+            debugBuilder.AppendLine($"cachedGainableSeverity: {cachedGainableSeverity}".Indented("    "));
+            debugBuilder.AppendLine(base.DebugString());
+            return debugBuilder.ToString();
         }
 
         public override void ExposeData()

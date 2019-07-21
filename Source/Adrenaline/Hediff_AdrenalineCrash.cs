@@ -14,46 +14,42 @@ namespace Adrenaline
     public class Hediff_AdrenalineCrash : Hediff_Adrenaline
     {
 
-        private const float BaseSeverityGainPerDay = 4;
+        private const float BaseSeverityGainPerDay = 6;
         private const float BaseSeverityLossPerDay = 2.4f;
-        private const float SeverityGainFactorPerCachedGainableSeverity = 1;
+        private const float GainableSeverityPerRushSeverityPerHour = 0.6f;
+        private const int TicksAtPeakSeverityBeforeSeverityLoss = 6 * GenDate.TicksPerHour;
 
         private Hediff AdrenalineRush => pawn.health.hediffSet.GetFirstHediffOfDef(ExtraRaceProps.adrenalineRushHediff);
 
-        protected override bool CanGainSeverity => base.CanGainSeverity;
+        protected override bool CanGainSeverity => base.CanGainSeverity && (AdrenalineRush == null || AdrenalineRush.ageTicks > GenDate.TicksPerHour * 2);
+
+        protected override bool CanLoseSeverity => !CanGainSeverity && ticksSinceLastSeverityGain >= TicksAtPeakSeverityBeforeSeverityLoss;
+
+        public override bool ShouldRemove => base.ShouldRemove && GainableSeverity == 0;
 
         protected override void UpdateSeverity()
         {
-            Log.Message($"Adrenaline crash gainable severity for {pawn} = {cachedGainableSeverity}", true);
-
             // Update gainable severity
             if (AdrenalineRush != null)
             {
-                GainableSeverity += AdrenalineRush.Severity / 100;
+                GainableSeverity += GainableSeverityPerRushSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * AdrenalineRush.Severity;
             }
 
             if (CanGainSeverity)
             {
                 float severityToGain =
-                    BaseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * // Basline
-                    (cachedGainableSeverity * SeverityGainFactorPerCachedGainableSeverity); // From cached gainable severity
+                    BaseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * // Baseline
+                    Mathf.Sqrt(cachedGainableSeverity); // From cached gainable severity
 
                 GainSeverityFromTick(severityToGain);
             }
 
-            else
+            else if (CanLoseSeverity)
             {
                 Severity -= BaseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks;
             }
 
             base.UpdateSeverity();
-        }
-
-        public override void ExposeData()
-        {
-
-
-            base.ExposeData();
         }
 
     }
