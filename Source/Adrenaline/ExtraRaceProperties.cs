@@ -11,12 +11,14 @@ using RimWorld.Planet;
 namespace Adrenaline
 {
 
-    public class ExtraRaceProperties : DefModExtension
+    public class ExtendedRaceProperties : DefModExtension
     {
 
-        public static readonly ExtraRaceProperties defaultValues = new ExtraRaceProperties();
+        public static readonly ExtendedRaceProperties defaultValues = new ExtendedRaceProperties();
 
-        public HediffDef adrenalineHediff = A_HediffDefOf.Adrenaline;
+        public HediffDef adrenalineRushHediff = A_HediffDefOf.Adrenaline;
+
+        public HediffDef adrenalineCrashHediff = A_HediffDefOf.AdrenalineCrash;
 
         public float adrenalineGainFactorNatural = 1;
 
@@ -24,7 +26,14 @@ namespace Adrenaline
 
         public float adrenalineLossFactor = 1;
 
-        public bool HasAdrenaline => adrenalineGainFactorNatural > 0 || adrenalineGainFactorArtificial > 0;
+        public bool HasAdrenaline => adrenalineRushHediff != null && (adrenalineGainFactorNatural > 0 || adrenalineGainFactorArtificial > 0);
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            // Has no adrenaline rush hediff but has adrenaline crash hediff
+            if (adrenalineRushHediff == null && adrenalineCrashHediff != null)
+                yield return $"Has null adrenalineRushHediff but has {adrenalineCrashHediff} adrenalineCrashHediff";
+        }
 
 
     }

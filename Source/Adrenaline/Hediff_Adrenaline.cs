@@ -11,49 +11,59 @@ using RimWorld.Planet;
 namespace Adrenaline
 {
 
-    public class Hediff_Adrenaline : HediffWithComps
+    public abstract class Hediff_Adrenaline : HediffWithComps
     {
+        protected const int SeverityUpdateIntervalTicks = 20;
 
-        private const float BaseSeverityLossPerHour = 0.3f;
+        protected float gainableSeverity;
+        protected float cachedGainableSeverity; // Exists to determine the rate at which severity increases
+        protected int ticksSinceLastSeverityGain;
 
-        private const int MinTicksSinceSeverityGainForSeverityLoss = 600;
-
-        public int lastSeverityGainTick;
-
-        public override float Severity
+        protected float GainableSeverity
         {
-            get => base.Severity;
+            get => gainableSeverity;
             set
             {
-                // Compare the old severity to new severity and if the new severity is higher, update field that stores when the severity last increased
-                float prevSeverity = base.Severity;
-                base.Severity = value;
-                if (base.Severity > prevSeverity)
-                    lastSeverityGainTick = Find.TickManager.TicksGame;
+                gainableSeverity = value;
+                cachedGainableSeverity = value;
             }
+        }
+
+        protected ExtendedRaceProperties ExtraRaceProps => pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
+
+        protected virtual bool CanGainSeverity => GainableSeverity > 0;
+
+        protected virtual bool CanLoseSeverity => true;
+
+        protected void GainSeverityFromTick(float sevOffset)
+        {
+            Severity += sevOffset;
+            GainableSeverity -= sevOffset;
+        }
+
+        protected virtual void UpdateSeverity()
+        {
+            if (CanGainSeverity)
+                ticksSinceLastSeverityGain = 0;
+            else
+                ticksSinceLastSeverityGain += SeverityUpdateIntervalTicks;
         }
 
         public override void Tick()
         {
-            base.Tick();
+            if (ageTicks % SeverityUpdateIntervalTicks == 0)
+                UpdateSeverity();
 
-            // Update every 60 ticks
-            if (pawn.IsHashIntervalTick(HealthTuning.HediffGiverUpdateInterval))
-            {
-                // Reduce severity over time if it's been more than 600 ticks since the last time severity was increased
-                if (Find.TickManager.TicksGame > lastSeverityGainTick + MinTicksSinceSeverityGainForSeverityLoss)
-                {
-                    var extraRaceProps = pawn.def.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
-                    Severity -= BaseSeverityLossPerHour / GenDate.TicksPerHour * extraRaceProps.adrenalineLossFactor * HealthTuning.HediffGiverUpdateInterval;
-                }
-                    
-            }
+            base.Tick();
         }
 
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref gainableSeverity, "gainableSeverity");
+            Scribe_Values.Look(ref cachedGainableSeverity, "cachedGainableSeverity");
+            Scribe_Values.Look(ref ticksSinceLastSeverityGain, "ticksSinceLastSeverityGain");
+
             base.ExposeData();
-            Scribe_Values.Look(ref lastSeverityGainTick, "lastSeverityGainTick");
         }
 
     }

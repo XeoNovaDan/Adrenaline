@@ -4,8 +4,9 @@
     <HediffDef>
         <defName>Adrenaline</defName>
         <label>adrenaline rush</label>
-        <hediffClass>Adrenaline.Hediff_Adrenaline</hediffClass>
+        <hediffClass>Adrenaline.Hediff_AdrenalineRush</hediffClass>
         <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
+        <initialSeverity>0</initialSeverity>
         <maxSeverity>1</maxSeverity>
         <stages>
 
@@ -119,7 +120,7 @@
                 </capMods>
                 <hediffGivers>
                     <li Class="HediffGiver_Random">
-                        <hediff>HeartAttack</hediff>    
+                        <hediff>HeartAttack</hediff>
                         <mtbDays>1.2</mtbDays>
                         <partsToAffect>
                             <li>Heart</li>
@@ -136,8 +137,9 @@
         <defName>AdrenalineCrash</defName>
         <label>adrenaline crash</label>
         <hediffClass>Adrenaline.Hediff_AdrenalineCrash</hediffClass>
-        <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
+        <defaultLabelColor>(0.6, 0.4, 0.4)</defaultLabelColor>
         <maxSeverity>1</maxSeverity>
+        <initialSeverity>0</initialSeverity>
         <stages>
 
             <li>
@@ -147,11 +149,11 @@
 
             <li>
                 <label>minor</label>
-                <minSeverity>0.01</minSeverity>
+                <minSeverity>0.2</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>0.15</offset>
+                        <offset>-0.1</offset>
                     </li>
                 </capMods>
                 <statOffsets>
@@ -164,11 +166,11 @@
 
             <li>
                 <label>moderate</label>
-                <minSeverity>0.1</minSeverity>
+                <minSeverity>0.4</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>0.2</offset>
+                        <offset>-0.2</offset>
                     </li>
                 </capMods>
                 <statOffsets>
@@ -181,11 +183,11 @@
 
             <li>
                 <label>severe</label>
-                <minSeverity>0.2</minSeverity>
+                <minSeverity>0.6</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>0.3</offset>
+                        <offset>-0.3</offset>
                     </li>
                 </capMods>
                 <statOffsets>
@@ -198,7 +200,7 @@
 
             <li>
                 <label>extreme</label>
-                <minSeverity>0.5</minSeverity>
+                <minSeverity>0.8</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>

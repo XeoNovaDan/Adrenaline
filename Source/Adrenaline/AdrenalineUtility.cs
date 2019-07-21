@@ -16,9 +16,7 @@ namespace Adrenaline
     public static class AdrenalineUtility
     {
 
-        private const float MaxPerceivedThreatDistance = 50;
-
-        private const float ThreatSignificanceFactorDowned = 0.5f;
+        private const float BasePerceivedThreatDistance = 50;
 
         private static readonly SimpleCurve PointsPerColonistByWealthCurve = new SimpleCurve // Copy-pasted from StorytellerUtility
         {
@@ -43,7 +41,7 @@ namespace Adrenaline
         public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn, bool ignoreDownedState = false)
         {
             // Not spawned, too far away from or not visible to the pawn in question
-            if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > MaxPerceivedThreatDistance || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, true))
+            if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > BasePerceivedThreatDistance * pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight) || !GenSight.LineOfSight(pawn.Position, t.Position, t.Map, true))
                 return false;
 
             // Pawn
@@ -101,14 +99,19 @@ namespace Adrenaline
             // Pawn
             if (t is Pawn p)
             {
+                float combatPower;
+
                 // If the pawn is a colonist, return the maximum of the kindDef's combatPower rating or the points per colonist based on the wealth of the player's wealthiest settlement
                 if (p.IsColonist)
                 {
                     var pawnIncidentTarget = Current.Game.World.worldObjects.Settlements.Where(s => s.HasMap && s.Map.IsPlayerHome).MaxBy(s => s.Map.PlayerWealthForStoryteller).Map;
-                    return Mathf.Max(PointsPerColonistByWealthCurve.Evaluate(pawnIncidentTarget.PlayerWealthForStoryteller), p.kindDef.combatPower);
+                    combatPower =  Mathf.Max(PointsPerColonistByWealthCurve.Evaluate(pawnIncidentTarget.PlayerWealthForStoryteller), p.kindDef.combatPower);
                 }
 
-                return p.kindDef.combatPower;
+                else
+                    combatPower = p.kindDef.combatPower;
+
+                return combatPower * p.health.summaryHealth.SummaryHealthPercent;
             }
 
             // Turret
@@ -126,7 +129,7 @@ namespace Adrenaline
 
         public static bool CanGetAdrenaline(this ThingDef tDef)
         {
-            var extraRaceProps = tDef.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
+            var extraRaceProps = tDef.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
             return tDef.race != null && extraRaceProps.HasAdrenaline && (tDef.race.hediffGiverSets?.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))) ?? false);
         }
 

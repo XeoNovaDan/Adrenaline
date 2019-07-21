@@ -33,7 +33,7 @@ namespace Adrenaline
             }
 
             // Multiply by the pawn's adrenaline resistance
-            var extraRaceProps = pawn.def.GetModExtension<ExtraRaceProperties>() ?? ExtraRaceProperties.defaultValues;
+            var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
             num *= extraRaceProps.adrenalineGainFactorArtificial;
 
             hediff.Severity = num;
