@@ -18,8 +18,8 @@ namespace Adrenaline
         private const float AttainableSeverityPerAdrenalineRushHediffSeverityPerHour = 0.5f;
         private const float BaseSeverityGainPerDay = 3; // 8 hours baseline for full severity to kick in
 
-        private const int BaseTicksAtPeakSeverityBeforeSeverityLoss = GenDate.TicksPerHour * 12; // Used in determining the delay between last severity gain and severity fall
-        private const float BaseSeverityLossPerDay = 0.7f; // Just over 16 hours for effects to fully subside
+        private const int BaseTicksAtPeakSeverityBeforeSeverityLoss = (int)(GenDate.TicksPerDay * 0.7f); // Used in determining the delay between last severity gain and severity fall
+        private const float BaseSeverityLossPerDay = 0.4f; // 2.5 days for effects to fully subside from 100% severity
         #endregion
 
         #region Fields
