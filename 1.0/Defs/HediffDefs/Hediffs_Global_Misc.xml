@@ -143,13 +143,13 @@
         <stages>
 
             <li>
-                <label>minor</label>
+                <label>trivial</label>
                 <becomeVisible>false</becomeVisible>
             </li>
 
             <li>
                 <label>minor</label>
-                <minSeverity>0.001</minSeverity>
+                <minSeverity>0.1</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
@@ -166,7 +166,7 @@
 
             <li>
                 <label>moderate</label>
-                <minSeverity>0.25</minSeverity>
+                <minSeverity>0.3</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
@@ -200,7 +200,7 @@
 
             <li>
                 <label>extreme</label>
-                <minSeverity>0.75</minSeverity>
+                <minSeverity>0.7</minSeverity>
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>

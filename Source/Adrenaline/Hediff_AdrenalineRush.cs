@@ -15,7 +15,7 @@ namespace Adrenaline
     {
 
         #region Constants
-        private const int SeverityLossDelayTicks = 300;
+        private const int BaseSeverityLossDelayTicks = 300;
         private const float BaseAttainableSeverityPerPeakTotalThreatSignificance = 0.75f;
         private const float BaseSeverityGainPerHour = 0.8f;
         private const float BaseSeverityLossPerHour = 1.6f;
@@ -25,7 +25,7 @@ namespace Adrenaline
         private float totalThreatSignificance; // Determines severity gain/loss rate
         private float peakTotalThreatSignificance; // Determines attainable severity
         private float totalSeverityGained;
-        private int ticksSinceLastSeverityGain;
+        public int ticksUntilSeverityLoss;
         #endregion
 
         #region Properties
@@ -44,12 +44,32 @@ namespace Adrenaline
         private float AttainableSeverity => TotalAttainableSeverity - totalSeverityGained;
 
         private float SeverityAdjustCoefficient => Mathf.Max(0.2f, Mathf.Sqrt(totalThreatSignificance));
+
+        public override float Severity
+        {
+            get => base.Severity;
+            set
+            {
+                float prevSeverity = Severity;
+                base.Severity = value;
+
+                // Update ticksUntilSeverityLoss
+                if (Severity > prevSeverity && ticksUntilSeverityLoss < BaseSeverityLossDelayTicks)
+                    ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
+            }
+        }
         #endregion
+
+        public override void PostMake()
+        {
+            ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
+            base.PostMake();
+        }
 
         protected override void UpdateSeverity()
         {
-            // Gain severity if total severity gained is less than the attainable severity and any threats are present
-            if (totalSeverityGained < AttainableSeverity && totalThreatSignificance > 0)
+            // Gain severity if the pawn can naturally gain adrenaline, total severity gained is less than the attainable severity and any threats are present
+            if (ExtraRaceProps.adrenalineGainFactorNatural > 0 && totalThreatSignificance > 0 && totalSeverityGained < TotalAttainableSeverity)
             {
                 float severityToGain = Mathf.Min(AttainableSeverity, 
                     BaseSeverityGainPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
@@ -58,13 +78,12 @@ namespace Adrenaline
 
                 Severity += severityToGain;
                 totalSeverityGained += severityToGain;
-                ticksSinceLastSeverityGain = 0;
             }
 
-            // Otherwise drop severity if it has been at least 300 ticks since the last gain
+            // Otherwise drop severity if appropriate
             else
             {
-                if (ticksSinceLastSeverityGain > SeverityLossDelayTicks)
+                if (ticksUntilSeverityLoss == 0)
                 {
                     float severityToLose = BaseSeverityLossPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
                         ExtraRaceProps.adrenalineLossFactor / // From extra race properties
@@ -74,7 +93,7 @@ namespace Adrenaline
                 }
 
                 else
-                    ticksSinceLastSeverityGain += SeverityUpdateIntervalTicks;
+                    ticksUntilSeverityLoss -= SeverityUpdateIntervalTicks;
             }
             
         }
@@ -107,7 +126,7 @@ namespace Adrenaline
             Scribe_Values.Look(ref totalThreatSignificance, "totalThreatSignificance");
             Scribe_Values.Look(ref peakTotalThreatSignificance, "peakTotalThreatSignificance");
             Scribe_Values.Look(ref totalSeverityGained, "totalSeverityGained");
-            Scribe_Values.Look(ref ticksSinceLastSeverityGain, "ticksSinceLastSeverityGain");
+            Scribe_Values.Look(ref ticksUntilSeverityLoss, "ticksUntilSeverityLoss");
 
             base.ExposeData();
         }
