@@ -46,20 +46,6 @@ namespace Adrenaline
         private float SeverityGainFactor => Mathf.Max(0.2f, Mathf.Sqrt(totalThreatSignificance));
 
         private float SeverityLossFactor => 1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance));
-
-        public override float Severity
-        {
-            get => base.Severity;
-            set
-            {
-                float prevSeverity = Severity;
-                base.Severity = value;
-
-                // Update ticksUntilSeverityLoss
-                if (Severity > prevSeverity && ticksUntilSeverityLoss < BaseSeverityLossDelayTicks)
-                    ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
-            }
-        }
         #endregion
 
         private void Reset()
@@ -79,6 +65,9 @@ namespace Adrenaline
             // Gain severity if the pawn can naturally gain adrenaline, total severity gained is less than the attainable severity and any threats are present
             if (ExtraRaceProps.adrenalineGainFactorNatural > 0 && totalThreatSignificance > 0 && totalSeverityGained < TotalAttainableSeverity)
             {
+                if (ticksUntilSeverityLoss < BaseSeverityLossDelayTicks)
+                    ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
+
                 float severityToGain = Mathf.Min(AttainableSeverity, 
                     BaseSeverityGainPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
                     ExtraRaceProps.adrenalineGainFactorNatural * // From extra race properties
