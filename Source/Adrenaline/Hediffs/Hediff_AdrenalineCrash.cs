@@ -23,7 +23,7 @@ namespace Adrenaline
         #endregion
 
         #region Fields
-        private int severityAdjustDelay;
+        private bool hediffWasNull;
         private float totalSeverityGained;
         private float totalAttainableSeverity;
         private int ticksAtPeakSeverity;
@@ -37,10 +37,9 @@ namespace Adrenaline
         public override bool ShouldRemove => base.ShouldRemove && AttainableSeverity <= 0;
         #endregion
 
-        public override void PostMake()
+        private void Reset()
         {
-            severityAdjustDelay = GenMath.RoundRandom(GenDate.TicksPerHour * Rand.Range(0.8f, 1.2f));
-            base.PostMake();
+            ticksAtPeakSeverity = 0;
         }
 
         protected override void UpdateSeverity()
@@ -48,32 +47,35 @@ namespace Adrenaline
             // Increase the attainable severity based on the adrenaline rush's severity
             if (AdrenalineRushHediff != null)
             {
+                if (hediffWasNull)
+                {
+                    Reset();
+                    hediffWasNull = false;
+                }
                 totalAttainableSeverity += AdrenalineRushHediff.Severity * AttainableSeverityPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks; // Factor in time 
             }
+            else
+                hediffWasNull = true;
 
-            // Only start changing the severity after the hediff is at least one in-game hour old +/- 20%
-            if (ageTicks > severityAdjustDelay)
+            // Increase severity if total severity gained is less than the attainable severity
+            if (totalSeverityGained < totalAttainableSeverity)
             {
-                // Increase severity if total severity gained is less than the attainable severity
-                if (totalSeverityGained < totalAttainableSeverity)
-                {
-                    float severityToGain = Mathf.Min(AttainableSeverity,
-                        BaseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * // Baseline
-                        SeverityGainFactor); // From cumulative adrenaline severity
+                float severityToGain = Mathf.Min(AttainableSeverity,
+                    BaseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * // Baseline
+                    SeverityGainFactor); // From cumulative adrenaline severity
 
-                    Severity += severityToGain;
-                    totalSeverityGained += severityToGain;
-                }
+                Severity += severityToGain;
+                totalSeverityGained += severityToGain;
+            }
 
-                // Otherwise if it's been a certain amount of time since peak severity was attained (depending on peak severity), drop severity
+            // Otherwise if it's been a certain amount of time since peak severity was attained (depending on peak severity), drop severity
+            else
+            {
+                if (ticksAtPeakSeverity >= (int)(BaseTicksAtPeakSeverityBeforeSeverityLoss * Severity))
+                    Severity -= BaseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks;
+
                 else
-                {
-                    if (ticksAtPeakSeverity >= (int)(BaseTicksAtPeakSeverityBeforeSeverityLoss * Severity))
-                        Severity -= BaseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks;
-
-                    else
-                        ticksAtPeakSeverity += SeverityUpdateIntervalTicks;
-                }
+                    ticksAtPeakSeverity += SeverityUpdateIntervalTicks;
             }
         }
 
@@ -88,7 +90,7 @@ namespace Adrenaline
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref severityAdjustDelay, "severityAdjustDelay");
+            Scribe_Values.Look(ref hediffWasNull, "hediffWasNull");
             Scribe_Values.Look(ref totalSeverityGained, "totalSeverityGained");
             Scribe_Values.Look(ref totalAttainableSeverity, "totalAttainableSeverity");
             Scribe_Values.Look(ref ticksAtPeakSeverity, "ticksAtPeakSeverity");

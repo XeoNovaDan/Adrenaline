@@ -63,13 +63,14 @@ namespace Adrenaline
         protected override void UpdateSeverity()
         {
             // Gain severity if the pawn can naturally gain adrenaline, total severity gained is less than the attainable severity and any threats are present
-            if (ExtraRaceProps.adrenalineGainFactorNatural > 0 && totalThreatSignificance > 0 && totalSeverityGained < TotalAttainableSeverity)
+            if (ExtraRaceProps.adrenalineGainFactorNatural > 0 && totalThreatSignificance > 0 && totalSeverityGained < TotalAttainableSeverity && AdrenalineTracker.CanGainAdrenaline)
             {
                 if (ticksUntilSeverityLoss < BaseSeverityLossDelayTicks)
                     ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
 
                 float severityToGain = Mathf.Min(AttainableSeverity, 
                     BaseSeverityGainPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
+                    AdrenalineTracker.AdrenalineRushSeverityGainFactor * // From tracker
                     ExtraRaceProps.adrenalineGainFactorNatural * // From extra race properties
                     SeverityGainFactor); // From threats
 
@@ -92,6 +93,9 @@ namespace Adrenaline
                 else
                     ticksUntilSeverityLoss -= SeverityUpdateIntervalTicks;
             }
+
+            // Update adrenaline tracker
+            AdrenalineTracker.CumulativeAdrenalineRushSeverity += Severity * SeverityUpdateIntervalTicks;
             
         }
 

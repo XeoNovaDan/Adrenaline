@@ -52,6 +52,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompAdrenalineTracker.cs" />
+    <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="A_TexCommand.cs" />
     <Compile Include="Hediffs\Hediff_AdrenalineRush.cs" />
     <Compile Include="Hediffs\Hediff_AdrenalineCrash.cs" />
