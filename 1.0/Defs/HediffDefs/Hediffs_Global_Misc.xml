@@ -153,14 +153,13 @@
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>-0.1</offset>
+                        <postFactor>0.9</postFactor>
                     </li>
                 </capMods>
                 <statOffsets>
                     <MentalBreakThreshold>0.02</MentalBreakThreshold>
                 </statOffsets>
                 <restFallFactorOffset>0.1</restFallFactorOffset>
-                <hungerRateFactorOffset>0.05</hungerRateFactorOffset>
                 <vomitMtbDays>5</vomitMtbDays>
             </li>
 
@@ -170,14 +169,13 @@
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>-0.15</offset>
+                        <postFactor>0.8</postFactor>
                     </li>
                 </capMods>
                 <statOffsets>
                     <MentalBreakThreshold>0.04</MentalBreakThreshold>
                 </statOffsets>
                 <restFallFactorOffset>0.3</restFallFactorOffset>
-                <hungerRateFactorOffset>0.1</hungerRateFactorOffset>
                 <vomitMtbDays>3</vomitMtbDays>
             </li>
 
@@ -187,14 +185,13 @@
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>-0.2</offset>
+                        <postFactor>0.7</postFactor>
                     </li>
                 </capMods>
                 <statOffsets>
                     <MentalBreakThreshold>0.06</MentalBreakThreshold>
                 </statOffsets>
                 <restFallFactorOffset>0.6</restFallFactorOffset>
-                <hungerRateFactorOffset>0.2</hungerRateFactorOffset>
                 <vomitMtbDays>2</vomitMtbDays>
             </li>
 
@@ -204,14 +201,13 @@
                 <capMods>
                     <li>
                         <capacity>Consciousness</capacity>
-                        <offset>-0.3</offset>
+                        <postFactor>0.5</postFactor>
                     </li>
                 </capMods>
                 <statOffsets>
                     <MentalBreakThreshold>0.08</MentalBreakThreshold>
                 </statOffsets>
                 <restFallFactorOffset>1</restFallFactorOffset>
-                <hungerRateFactorOffset>0.3</hungerRateFactorOffset>
                 <vomitMtbDays>1</vomitMtbDays>
             </li>
 

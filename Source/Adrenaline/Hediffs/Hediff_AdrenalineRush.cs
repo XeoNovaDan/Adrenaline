@@ -16,9 +16,9 @@ namespace Adrenaline
 
         #region Constants
         private const int BaseSeverityLossDelayTicks = 300;
-        private const float BaseAttainableSeverityPerPeakTotalThreatSignificance = 0.75f;
-        private const float BaseSeverityGainPerHour = 0.8f;
-        private const float BaseSeverityLossPerHour = 1.6f;
+        private const float BaseAttainableSeverityPerPeakTotalThreatSignificance = 0.65f;
+        private const float BaseSeverityGainPerHour = 1.2f;
+        private const float BaseSeverityLossPerHour = 1.7f;
         #endregion
 
         #region Fields
@@ -43,7 +43,9 @@ namespace Adrenaline
         }
         private float AttainableSeverity => TotalAttainableSeverity - totalSeverityGained;
 
-        private float SeverityAdjustCoefficient => Mathf.Max(0.2f, Mathf.Sqrt(totalThreatSignificance));
+        private float SeverityGainFactor => Mathf.Max(0.2f, Mathf.Sqrt(totalThreatSignificance));
+
+        private float SeverityLossFactor => 1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance));
 
         public override float Severity
         {
@@ -60,6 +62,12 @@ namespace Adrenaline
         }
         #endregion
 
+        private void Reset()
+        {
+            peakTotalThreatSignificance = 0;
+            totalSeverityGained = Severity;
+        }
+
         public override void PostMake()
         {
             ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
@@ -74,7 +82,7 @@ namespace Adrenaline
                 float severityToGain = Mathf.Min(AttainableSeverity, 
                     BaseSeverityGainPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
                     ExtraRaceProps.adrenalineGainFactorNatural * // From extra race properties
-                    SeverityAdjustCoefficient); // From threats
+                    SeverityGainFactor); // From threats
 
                 Severity += severityToGain;
                 totalSeverityGained += severityToGain;
@@ -83,11 +91,11 @@ namespace Adrenaline
             // Otherwise drop severity if appropriate
             else
             {
-                if (ticksUntilSeverityLoss == 0)
+                if (ticksUntilSeverityLoss <= 0)
                 {
                     float severityToLose = BaseSeverityLossPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
-                        ExtraRaceProps.adrenalineLossFactor / // From extra race properties
-                        SeverityAdjustCoefficient; // From threats
+                        ExtraRaceProps.adrenalineLossFactor * // From extra race properties
+                        SeverityLossFactor; // From threats
 
                     Severity -= severityToLose;
                 }
@@ -103,7 +111,13 @@ namespace Adrenaline
             // Update peak total threat significance
             if (ageTicks % HealthTuning.HediffGiverUpdateInterval == 0)
             {
+                float previousTotalThreatSignificance = totalThreatSignificance;
                 totalThreatSignificance = AdrenalineUtility.GetPerceivedThreatsFor(pawn).Sum(t => t.PerceivedThreatSignificanceFor(pawn));
+
+                // If severity was dropping, threat significance had hit 0 and there are new threats, reset peakTotalThreatSignificance and set totalSeverityGained to current severity
+                if (ticksUntilSeverityLoss == 0 && previousTotalThreatSignificance == 0 && totalThreatSignificance > previousTotalThreatSignificance)
+                    Reset();
+
                 if (totalThreatSignificance > peakTotalThreatSignificance)
                     peakTotalThreatSignificance = totalThreatSignificance;
             }
@@ -116,7 +130,8 @@ namespace Adrenaline
             var debugBuilder = new StringBuilder();
             debugBuilder.AppendLine($"total severity gained: {totalSeverityGained}".Indented("    "));
             debugBuilder.AppendLine($"attainable severity: {AttainableSeverity}".Indented("    "));
-            debugBuilder.AppendLine($"severity adjust coefficient: {SeverityAdjustCoefficient}".Indented("    "));
+            debugBuilder.AppendLine($"severity gain factor: {SeverityGainFactor}".Indented("    "));
+            debugBuilder.AppendLine($"severity loss factor: {SeverityLossFactor}".Indented("    "));
             debugBuilder.AppendLine(base.DebugString());
             return debugBuilder.ToString();
         }

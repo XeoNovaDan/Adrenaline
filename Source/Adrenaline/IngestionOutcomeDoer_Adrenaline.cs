@@ -17,27 +17,30 @@ namespace Adrenaline
         // I definitely, definitely did not copy and paste a decompiled IngestionOutcomeDoer_GiveHediff and adapt it. Why would I ever do that?
         protected override void DoIngestionOutcomeSpecial(Pawn pawn, Thing ingested)
         {
-            Hediff hediff = HediffMaker.MakeHediff(this.hediffDef, pawn, null);
-            float num;
-            if (this.severity > 0f)
+            // Check if the ingesting pawn can actually get adrenaline
+            if (pawn.CanGetAdrenaline())
             {
-                num = this.severity;
-            }
-            else
-            {
-                num = this.hediffDef.initialSeverity;
-            }
-            if (this.divideByBodySize)
-            {
-                num /= pawn.BodySize;
-            }
+                // Improperly configured properties
+                if (hediffDef.hediffClass != typeof(Hediff_AdrenalineRush))
+                {
+                    Log.Error($"hediffDef for {ingested.def} does not have a hediffClass of Adrenaline.Hediff_AdrenalineRush");
+                    return;
+                }
 
-            // Multiply by the pawn's adrenaline resistance
-            var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
-            num *= extraRaceProps.adrenalineGainFactorArtificial;
+                // Determine severity gain
+                float severityGain = (severity > 0) ? severity : hediffDef.initialSeverity;
 
-            hediff.Severity = num;
-            pawn.health.AddHediff(hediff, null, null, null);
+                if (divideByBodySize)
+                    severityGain /= pawn.BodySize;
+
+                var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
+                severityGain *= extraRaceProps.adrenalineGainFactorArtificial;
+
+                // Add severity and increase the duration of the hediff
+                HealthUtility.AdjustSeverity(pawn, hediffDef, severityGain);
+                var adrenalineHediff = (Hediff_AdrenalineRush)pawn.health.hediffSet.GetFirstHediffOfDef(hediffDef);
+                adrenalineHediff.ticksUntilSeverityLoss += adrenalineHediffDurationOffset;
+            }
         }
 
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats(ThingDef parentDef)
@@ -52,11 +55,13 @@ namespace Adrenaline
             yield break;
         }
 
-        public HediffDef hediffDef;
+        private HediffDef hediffDef;
 
-        public float severity = -1f;
+        private float severity = -1;
 
         private bool divideByBodySize;
+
+        private int adrenalineHediffDurationOffset;
 
     }
     // Okay, you got me... :(

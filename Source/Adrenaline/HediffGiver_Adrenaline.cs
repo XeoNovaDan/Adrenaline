@@ -14,7 +14,7 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
-        private const float BaseSeverityGainPerDamageTaken = 0.0025f;
+        private const float BaseSeverityGainPerDamageTaken = 0.005f;
 
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
         {
