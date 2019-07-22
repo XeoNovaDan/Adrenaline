@@ -16,73 +16,37 @@ namespace Adrenaline
 
         #region Fields
         protected float totalThreatSignificance; // Determines severity gain/loss rate
-        protected float peakTotalThreatSignificance; // Determines attainable severity
-        protected float totalSeverityGained;
-        public int ticksUntilSeverityLoss;
+        public int severityLossDelayTicks;
         #endregion
 
         #region Properties
         public AdrenalineRushProperties Props => def.GetModExtension<HediffDefExtension>().adrenalineRush;
 
-        protected virtual float TotalAttainableSeverity
+        protected virtual float TargetSeverity
         {
             get
             {
-                float baseAttainableSeverity = peakTotalThreatSignificance * Props.baseAttainableSeverityGainPerPeakTotalThreatSignificance;
-                if (baseAttainableSeverity <= 1)
-                    return baseAttainableSeverity;
-
-                // If the base attainable severity is more than 1, return the square root to prevent extreme values
-                return Mathf.Sqrt(baseAttainableSeverity);
+                float modifiedThreatSignificance = totalThreatSignificance < 1 ? totalThreatSignificance : Mathf.Sqrt(totalThreatSignificance);
+                return modifiedThreatSignificance * Props.targetSeverityPerTotalThreatSignificance * AdrenalineTracker.AdrenalineProductionFactor;
             }
         }
-        protected virtual float AttainableSeverity => TotalAttainableSeverity - totalSeverityGained;
 
-        protected virtual float SeverityGainFactor =>
-            Mathf.Sqrt(totalThreatSignificance) * // From threat
-            AdrenalineTracker.AdrenalineRushSeverityGainFactor * // From adrenaline tracker
-            ExtraRaceProps.adrenalineGainFactorNatural; // From extra race properties
+        protected virtual float SeverityGainFactor => Mathf.Sqrt(totalThreatSignificance) * AdrenalineTracker.AdrenalineProductionFactor;
 
-        protected virtual float SeverityLossFactor =>
-            1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance)) * // From threat
-            ExtraRaceProps.adrenalineLossFactor; // From extra race properties
+        protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance))) + Mathf.Max(0, 1 - AdrenalineTracker.AdrenalineProductionFactor)) * ExtraRaceProps.adrenalineLossFactor;
         #endregion
-
-        public override void Reset()
-        {
-            peakTotalThreatSignificance = 0;
-            totalSeverityGained = Severity;
-        }
-
-        public override void PostMake()
-        {
-            ticksUntilSeverityLoss = Props.baseSeverityLossDelayTicks;
-            base.PostMake();
-        }
 
         protected override void UpdateSeverity()
         {
-            // Gain severity if there are any threats, any more severity can be gained and the pawn can currently produce adrenaline
-            if (totalThreatSignificance > 0 && totalSeverityGained < TotalAttainableSeverity && AdrenalineTracker.CanProduceAdrenaline)
-            {
-                if (ticksUntilSeverityLoss < Props.baseSeverityLossDelayTicks)
-                    ticksUntilSeverityLoss = Props.baseSeverityLossDelayTicks;
-
-                float severityToGain = Mathf.Min(AttainableSeverity, Props.baseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityGainFactor);
-
-                Severity += severityToGain;
-                totalSeverityGained += severityToGain;
-            }
+            // Gain severity if it is less than target severity
+            if (Severity < TargetSeverity)
+                Severity += Mathf.Min(TargetSeverity - Severity, Props.baseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityGainFactor);
 
             // Otherwise drop severity if appropriate
-            else
-            {
-                if (ticksUntilSeverityLoss <= 0)
-                    Severity -= Props.baseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityLossFactor;
+            else if(severityLossDelayTicks <= 0)
+                Severity -= Mathf.Min(Severity - TargetSeverity, Props.baseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityLossFactor);
 
-                else
-                    ticksUntilSeverityLoss -= SeverityUpdateIntervalTicks;
-            }
+            severityLossDelayTicks -= Mathf.Min(severityLossDelayTicks, SeverityUpdateIntervalTicks);
 
             // Update adrenaline tracker
             AdrenalineTracker.CumulativeAdrenalineRushSeverity += Severity * SeverityUpdateIntervalTicks;
@@ -91,15 +55,7 @@ namespace Adrenaline
 
         protected virtual void UpdateTotalThreatSignificance()
         {
-            float previousTotalThreatSignificance = totalThreatSignificance;
             totalThreatSignificance = AdrenalineUtility.GetPerceivedThreatsFor(pawn).Sum(t => t.PerceivedThreatSignificanceFor(pawn));
-
-            // If severity was dropping, threat significance had hit 0 and there are new threats, reset peakTotalThreatSignificance and set totalSeverityGained to current severity
-            if (ticksUntilSeverityLoss == 0 && previousTotalThreatSignificance == 0 && totalThreatSignificance > previousTotalThreatSignificance)
-                Reset();
-
-            if (totalThreatSignificance > peakTotalThreatSignificance)
-                peakTotalThreatSignificance = totalThreatSignificance;
         }
 
         public override void Tick()
@@ -114,8 +70,7 @@ namespace Adrenaline
         public override string DebugString()
         {
             var debugBuilder = new StringBuilder();
-            debugBuilder.AppendLine($"total severity gained: {totalSeverityGained}".Indented("    "));
-            debugBuilder.AppendLine($"attainable severity: {AttainableSeverity}".Indented("    "));
+            debugBuilder.AppendLine($"target severity: {TargetSeverity}".Indented("    "));
             debugBuilder.AppendLine($"severity gain factor: {SeverityGainFactor}".Indented("    "));
             debugBuilder.AppendLine($"severity loss factor: {SeverityLossFactor}".Indented("    "));
             debugBuilder.AppendLine(base.DebugString());
@@ -125,9 +80,7 @@ namespace Adrenaline
         public override void ExposeData()
         {
             Scribe_Values.Look(ref totalThreatSignificance, "totalThreatSignificance");
-            Scribe_Values.Look(ref peakTotalThreatSignificance, "peakTotalThreatSignificance");
-            Scribe_Values.Look(ref totalSeverityGained, "totalSeverityGained");
-            Scribe_Values.Look(ref ticksUntilSeverityLoss, "ticksUntilSeverityLoss");
+            Scribe_Values.Look(ref severityLossDelayTicks, "severityLossDelayTicks");
 
             base.ExposeData();
         }

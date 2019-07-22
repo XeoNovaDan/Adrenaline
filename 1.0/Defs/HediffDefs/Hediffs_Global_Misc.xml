@@ -134,7 +134,7 @@
         <modExtensions>
             <li Class="Adrenaline.HediffDefExtension">
                 <adrenalineRush>
-                    <baseAttainableSeverityGainPerPeakTotalThreatSignificance>0.65</baseAttainableSeverityGainPerPeakTotalThreatSignificance>
+                    <targetSeverityPerTotalThreatSignificance>0.65</targetSeverityPerTotalThreatSignificance>
                     <baseSeverityGainPerDay>28.8</baseSeverityGainPerDay> <!-- 1.2 per hour -->
                     <baseSeverityLossDelayTicks>300</baseSeverityLossDelayTicks>
                     <baseSeverityLossPerDay>40.8</baseSeverityLossPerDay> <!-- 1.7 per hour -->
@@ -147,19 +147,16 @@
 
                     <!-- Moderate -->
                     <li>
-                        <index>1</index>
                         <meleeDamageFactor>1.125</meleeDamageFactor>
                     </li>
 
                     <!-- Intense -->
                     <li>
-                        <index>2</index>
                         <meleeDamageFactor>1.2</meleeDamageFactor>
                     </li>
 
                     <!-- Extreme -->
                     <li>
-                        <index>3</index>
                         <meleeDamageFactor>1.3</meleeDamageFactor>
                     </li>
                 </stages>

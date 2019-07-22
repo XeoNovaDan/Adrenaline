@@ -29,11 +29,11 @@ namespace Adrenaline
             get => cumulativeAdrenalineRushSeverity;
             set
             {
-                cumulativeAdrenalineRushSeverity = Mathf.Clamp(value, 0, Props.maxCumulativeAdrenalineRushSeverity);
+                cumulativeAdrenalineRushSeverity = Mathf.Max(value, 0);
             }
         }
 
-        public float AdrenalineRushSeverityGainFactor => Mathf.Lerp(1, Props.minAdrenalineRushSeverityGainFactor, CumulativeAdrenalineRushSeverity / Props.maxCumulativeAdrenalineRushSeverity);
+        public float AdrenalineProductionFactor => Mathf.Max(ExtraRaceProps.adrenalineGainFactorNatural * (1 - CumulativeAdrenalineRushSeverity / Props.maxCumulativeAdrenalineRushSeverity), 0);
 
         public bool CanProduceAdrenaline
         {
@@ -47,11 +47,7 @@ namespace Adrenaline
                 if (Pawn.story != null && Pawn.story.traits.HasTrait(A_TraitDefOf.CoolHeaded))
                     return false;
 
-                // Had a lot of adrenaline recently
-                if (CumulativeAdrenalineRushSeverity >= Props.maxCumulativeAdrenalineRushSeverity)
-                    return false;
-
-                return true;
+                return AdrenalineProductionFactor > 0;
             }
         }
 
@@ -59,7 +55,7 @@ namespace Adrenaline
         {
             // If the pawn doesn't have an adrenaline rush, reduce the cumulative adrenaline rush severity
             if (parent.IsHashIntervalTick(UpdateIntervalTicks) && !Pawn.health.hediffSet.HasHediff(ExtraRaceProps.adrenalineRushHediff))
-                CumulativeAdrenalineRushSeverity -= UpdateIntervalTicks;
+                CumulativeAdrenalineRushSeverity -= Props.cumulativeAdrenalineRushSeverityFallPerDay / GenDate.TicksPerDay * UpdateIntervalTicks;
 
             base.CompTick();
         }

@@ -20,7 +20,7 @@ namespace Adrenaline
         }
 
         public float maxCumulativeAdrenalineRushSeverity = 5000;
-        public float minAdrenalineRushSeverityGainFactor = 0.25f;
+        public float cumulativeAdrenalineRushSeverityFallPerDay = 3200;
 
     }
 

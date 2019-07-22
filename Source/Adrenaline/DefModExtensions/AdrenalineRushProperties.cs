@@ -14,7 +14,7 @@ namespace Adrenaline
     public class AdrenalineRushProperties
     {
 
-        public float baseAttainableSeverityGainPerPeakTotalThreatSignificance;
+        public float targetSeverityPerTotalThreatSignificance;
 
         public float baseSeverityGainPerDay;
 

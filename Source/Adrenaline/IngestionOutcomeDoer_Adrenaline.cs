@@ -39,7 +39,7 @@ namespace Adrenaline
                 // Add severity and increase the duration of the hediff
                 HealthUtility.AdjustSeverity(pawn, hediffDef, severityGain);
                 var adrenalineHediff = (Hediff_AdrenalineRush)pawn.health.hediffSet.GetFirstHediffOfDef(hediffDef);
-                adrenalineHediff.ticksUntilSeverityLoss += adrenalineHediffDurationOffset;
+                adrenalineHediff.severityLossDelayTicks += adrenalineHediffDurationOffset;
             }
         }
 

@@ -20,10 +20,6 @@ namespace Adrenaline
 
         protected CompAdrenalineTracker AdrenalineTracker => pawn.GetComp<CompAdrenalineTracker>();
 
-        public virtual void Reset()
-        {
-        }
-
         protected abstract void UpdateSeverity();
 
         public override void Tick()

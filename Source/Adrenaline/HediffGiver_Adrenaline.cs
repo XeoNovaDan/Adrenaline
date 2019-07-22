@@ -14,6 +14,8 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
+        private const int BaseAdrenalineLossDelay = 300;
+
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
         {
             var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
@@ -47,12 +49,15 @@ namespace Adrenaline
                     var injury = hediff as Hediff_Injury;
                     if (injury == null || injury.IsPermanent() || pawn.Dead)
                         return false;
+
                     // Try and add severity based on the pain caused by the injury
                     float painFromInjury = injury.PainOffset / pawn.HealthScale * pawn.TotalPainFactor();
                     if (painFromInjury > 0)
                     {
-                        float severityToAdd = painFromInjury * adrenalineTracker.AdrenalineRushSeverityGainFactor * extraRaceProps.adrenalineGainFactorNatural;
+                        float severityToAdd = painFromInjury * adrenalineTracker.AdrenalineProductionFactor;
                         HealthUtility.AdjustSeverity(pawn, extraRaceProps.adrenalineRushHediff, severityToAdd);
+                        var rushHediff = (Hediff_AdrenalineRush)pawn.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff);
+                        rushHediff.severityLossDelayTicks += (int)(severityToAdd * BaseAdrenalineLossDelay);
                         return true;
                     }
                 }

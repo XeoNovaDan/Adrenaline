@@ -16,8 +16,6 @@ namespace Adrenaline
 
         public static readonly ExtraHediffStageProperties defaultValues = new ExtraHediffStageProperties();
 
-        public int index;
-
         public float meleeDamageFactor = 1;
 
     }

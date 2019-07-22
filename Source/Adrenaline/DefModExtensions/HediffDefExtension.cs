@@ -18,17 +18,7 @@ namespace Adrenaline
 
         public ExtraHediffStageProperties GetExtraHediffStagePropertiesAt(int index)
         {
-            // List isn't defined so return default
-            if (stages.NullOrEmpty())
-                return ExtraHediffStageProperties.defaultValues;
-
-            // Look for an index match in the list and return the first match
-            foreach (var stageProps in stages)
-                if (stageProps.index == index)
-                    return stageProps;
-
-            // If there wasn't a match, return default
-            return ExtraHediffStageProperties.defaultValues;
+            return stages.NullOrEmpty() ? ExtraHediffStageProperties.defaultValues : stages[index];
         }
 
         private List<ExtraHediffStageProperties> stages;
