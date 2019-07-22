@@ -47,7 +47,7 @@ namespace Adrenaline
                 yield return threat;
         }
 
-        public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn, bool ignoreDownedState = false)
+        public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn)
         {
             // Not spawned, fogged, too far away from the pawn in question or cannot see them
             if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > BasePerceivedThreatDistance * pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight) || !AttackTargetFinder.CanSee(pawn, t))
@@ -56,7 +56,7 @@ namespace Adrenaline
             // Pawn
             if (t is Pawn p)
             {
-                return (ignoreDownedState || !p.Downed) && (p.HostileTo(pawn) || pawn.InCombatWith(p));
+                return !p.Downed && (p.HostileTo(pawn) || pawn.InCombatWith(p));
             }
 
             // Turret (if pawn is not an animal)
@@ -81,7 +81,19 @@ namespace Adrenaline
             return false;
         }
 
-        public static bool InCombatWith(this Pawn pawn, Pawn p) => pawn.IsFighting() && pawn.CurJob.AnyTargetIs(p);
+        public static bool InCombatWith(this Pawn pawn, Pawn p)
+        {
+            // pawn is actively targeting p
+            if (pawn.IsFighting() && pawn.CurJob.AnyTargetIs(p))
+                return true;
+
+            // p is actively targeting pawn and has made attacks
+            var battle = pawn.records.BattleActive;
+            if (p.IsFighting() && p.CurJob.AnyTargetIs(pawn) && battle != null && battle.Concerns(p))
+                return true;
+
+            return false;
+        }
 
         public static bool IsPotentialPerceivableThreat(this Thing t)
         {

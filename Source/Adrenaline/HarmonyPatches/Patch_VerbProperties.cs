@@ -25,33 +25,17 @@ namespace Adrenaline
 
             public static void Postfix(Pawn attacker, ref float __result)
             {
-                // If an attacker exists and has the Adrenaline hediff, multiply based on the stage
+                // If an attacker exists and has an adrenaline rush hediff, multiply based on the stage
                 if (attacker != null)
                 {
-                    var adrenalineHediff = attacker.health.hediffSet.GetFirstHediffOfDef(A_HediffDefOf.Adrenaline);
+                    var extraRaceProps = attacker.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
+                    var adrenalineHediff = attacker.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff);
                     if (adrenalineHediff != null)
                     {
-                        switch (adrenalineHediff.CurStageIndex)
-                        {
-                            case 0: // Slight
-                                __result *= 1.05f;
-                                return;
-
-                            case 1: // Moderate
-                                __result *= 1.1f;
-                                return;
-
-                            case 2: // Intense
-                                __result *= 1.15f;
-                                return;
-
-                            case 3: // Extreme
-                                __result *= 1.2f;
-                                return;
-
-                            default:
-                                throw new NotImplementedException();
-                        }
+                        var hediffDefExtension = adrenalineHediff.def.GetModExtension<HediffDefExtension>() ?? HediffDefExtension.defaultValues;
+                        var extraHediffStageProps = hediffDefExtension.GetExtraHediffStagePropertiesAt(adrenalineHediff.CurStageIndex);
+                        Log.Message(extraHediffStageProps.meleeDamageFactor.ToString());
+                        __result *= extraHediffStageProps.meleeDamageFactor;
                     }
                 }
             }

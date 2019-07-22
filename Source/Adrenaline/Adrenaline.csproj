@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompAdrenalineTracker.cs" />
+    <Compile Include="DefModExtensions\ExtraHediffStageProperties.cs" />
+    <Compile Include="DefModExtensions\HediffDefExtension.cs" />
     <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="A_TexCommand.cs" />
     <Compile Include="Hediffs\Hediff_AdrenalineRush.cs" />
@@ -60,7 +62,7 @@
     <Compile Include="IngestionOutcomeDoer_Adrenaline.cs" />
     <Compile Include="Hediffs\Hediff_Adrenaline.cs" />
     <Compile Include="DefOf\A_ThingDefOf.cs" />
-    <Compile Include="ExtraRaceProperties.cs" />
+    <Compile Include="DefModExtensions\ExtraRaceProperties.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn.cs" />
     <Compile Include="DefOf\A_HediffDefOf.cs" />
     <Compile Include="DefOf\A_TraitDefOf.cs" />
