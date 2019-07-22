@@ -14,30 +14,23 @@ namespace Adrenaline
     public class Hediff_AdrenalineCrash : Hediff_Adrenaline
     {
 
-        #region Constants
-        private const float AttainableSeverityPerAdrenalineRushHediffSeverityPerHour = 0.5f;
-        private const float BaseSeverityGainPerDay = 3; // 8 hours baseline for full severity to kick in
-
-        private const int BaseTicksAtPeakSeverityBeforeSeverityLoss = (int)(GenDate.TicksPerDay * 0.7f); // Used in determining the delay between last severity gain and severity fall
-        private const float BaseSeverityLossPerDay = 0.4f; // 2.5 days for effects to fully subside from 100% severity
-        #endregion
-
         #region Fields
-        private bool hediffWasNull;
-        private float totalSeverityGained;
-        private float totalAttainableSeverity;
-        private int ticksAtPeakSeverity;
+        protected bool hediffWasNull;
+        protected float totalSeverityGained;
+        protected float totalAttainableSeverity;
+        protected int ticksAtPeakSeverity;
         #endregion
 
         #region Properties
-        private Hediff AdrenalineRushHediff => pawn.health.hediffSet.GetFirstHediffOfDef(ExtraRaceProps.adrenalineRushHediff);
-        private float SeverityGainFactor => totalAttainableSeverity < 1 ? Mathf.Sqrt(totalAttainableSeverity) : totalAttainableSeverity;
-        private float AttainableSeverity => totalAttainableSeverity - totalSeverityGained;
+        public AdrenalineCrashProperties Props => def.GetModExtension<HediffDefExtension>().adrenalineCrash;
+        protected Hediff AdrenalineRushHediff => pawn.health.hediffSet.GetFirstHediffOfDef(ExtraRaceProps.adrenalineRushHediff);
+        protected virtual float SeverityGainFactor => totalAttainableSeverity < 1 ? Mathf.Sqrt(totalAttainableSeverity) : totalAttainableSeverity;
+        protected virtual float AttainableSeverity => totalAttainableSeverity - totalSeverityGained;
 
         public override bool ShouldRemove => base.ShouldRemove && AttainableSeverity <= 0;
         #endregion
 
-        private void Reset()
+        public override void Reset()
         {
             ticksAtPeakSeverity = 0;
         }
@@ -52,7 +45,7 @@ namespace Adrenaline
                     Reset();
                     hediffWasNull = false;
                 }
-                totalAttainableSeverity += AdrenalineRushHediff.Severity * AttainableSeverityPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks; // Factor in time 
+                totalAttainableSeverity += AdrenalineRushHediff.Severity * Props.attainableSeverityPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks; // Factor in time 
             }
             else
                 hediffWasNull = true;
@@ -61,7 +54,7 @@ namespace Adrenaline
             if (totalSeverityGained < totalAttainableSeverity)
             {
                 float severityToGain = Mathf.Min(AttainableSeverity,
-                    BaseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * // Baseline
+                    Props.baseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * // Baseline
                     SeverityGainFactor); // From cumulative adrenaline severity
 
                 Severity += severityToGain;
@@ -71,8 +64,8 @@ namespace Adrenaline
             // Otherwise if it's been a certain amount of time since peak severity was attained (depending on peak severity), drop severity
             else
             {
-                if (ticksAtPeakSeverity >= (int)(BaseTicksAtPeakSeverityBeforeSeverityLoss * Severity))
-                    Severity -= BaseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks;
+                if (ticksAtPeakSeverity >= (int)(Props.baseTicksAtPeakSeverityBeforeSeverityLoss * Severity))
+                    Severity -= Props.baseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks;
 
                 else
                     ticksAtPeakSeverity += SeverityUpdateIntervalTicks;

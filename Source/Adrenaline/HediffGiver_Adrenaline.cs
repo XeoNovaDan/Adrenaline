@@ -14,19 +14,17 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
-        private const float BaseSeverityGainPerDamageTaken = 0.005f;
-
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
         {
             var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
 
             if (extraRaceProps.HasAdrenaline)
             {
-                var storyTracker = pawn.story;
+                var adrenalineTracker = pawn.GetComp<CompAdrenalineTracker>();
                 bool hasRush = pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineRushHediff);
 
-                // If the pawn isn't cool-headed and doesn't already have an adrenaline rush, add adrenaline rush
-                if ((storyTracker == null || !storyTracker.traits.HasTrait(A_TraitDefOf.CoolHeaded)) && !hasRush && AdrenalineUtility.GetPerceivedThreatsFor(pawn).Any())
+                // If the pawn can produce adrenaline and doesn't already have an adrenaline rush, add adrenaline rush
+                if (adrenalineTracker.CanProduceAdrenaline && !hasRush && AdrenalineUtility.GetPerceivedThreatsFor(pawn).Any())
                     pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff);
 
                 // Otherwise if they have an adrenaline rush and don't have an adrenaline crash hediff, add an adrenaline crash hediff
@@ -42,16 +40,22 @@ namespace Adrenaline
 
             if (extraRaceProps.HasAdrenaline)
             {
-                var storyTracker = pawn.story;
-
-                // Hediff isn't an injury, is a scar, the pawn is dead or the pawn has the 'cool-headed' trait
-                var injury = hediff as Hediff_Injury;
-                if (injury == null || injury.IsPermanent() || pawn.Dead || (storyTracker != null && storyTracker.traits.HasTrait(A_TraitDefOf.CoolHeaded)))
-                    return false;
-
-                float severityToAdd = BaseSeverityGainPerDamageTaken * extraRaceProps.adrenalineGainFactorNatural * injury.Severity / pawn.HealthScale;
-                HealthUtility.AdjustSeverity(pawn, extraRaceProps.adrenalineRushHediff, severityToAdd);
-                return true;
+                var adrenalineTracker = pawn.GetComp<CompAdrenalineTracker>();
+                if (adrenalineTracker.CanProduceAdrenaline)
+                {
+                    // Hediff isn't an injury, is a scar or the pawn is dead
+                    var injury = hediff as Hediff_Injury;
+                    if (injury == null || injury.IsPermanent() || pawn.Dead)
+                        return false;
+                    // Try and add severity based on the pain caused by the injury
+                    float painFromInjury = injury.PainOffset / pawn.HealthScale * pawn.TotalPainFactor();
+                    if (painFromInjury > 0)
+                    {
+                        float severityToAdd = painFromInjury * adrenalineTracker.AdrenalineRushSeverityGainFactor * extraRaceProps.adrenalineGainFactorNatural;
+                        HealthUtility.AdjustSeverity(pawn, extraRaceProps.adrenalineRushHediff, severityToAdd);
+                        return true;
+                    }
+                }
             }
 
             return false;

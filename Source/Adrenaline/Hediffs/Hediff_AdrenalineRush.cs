@@ -14,26 +14,21 @@ namespace Adrenaline
     public class Hediff_AdrenalineRush : Hediff_Adrenaline
     {
 
-        #region Constants
-        private const int BaseSeverityLossDelayTicks = 300;
-        private const float BaseAttainableSeverityPerPeakTotalThreatSignificance = 0.65f;
-        private const float BaseSeverityGainPerHour = 1.2f;
-        private const float BaseSeverityLossPerHour = 1.7f;
-        #endregion
-
         #region Fields
-        private float totalThreatSignificance; // Determines severity gain/loss rate
-        private float peakTotalThreatSignificance; // Determines attainable severity
-        private float totalSeverityGained;
+        protected float totalThreatSignificance; // Determines severity gain/loss rate
+        protected float peakTotalThreatSignificance; // Determines attainable severity
+        protected float totalSeverityGained;
         public int ticksUntilSeverityLoss;
         #endregion
 
         #region Properties
-        private float TotalAttainableSeverity
+        public AdrenalineRushProperties Props => def.GetModExtension<HediffDefExtension>().adrenalineRush;
+
+        protected virtual float TotalAttainableSeverity
         {
             get
             {
-                float baseAttainableSeverity = peakTotalThreatSignificance * BaseAttainableSeverityPerPeakTotalThreatSignificance;
+                float baseAttainableSeverity = peakTotalThreatSignificance * Props.baseAttainableSeverityGainPerPeakTotalThreatSignificance;
                 if (baseAttainableSeverity <= 1)
                     return baseAttainableSeverity;
 
@@ -41,14 +36,19 @@ namespace Adrenaline
                 return Mathf.Sqrt(baseAttainableSeverity);
             }
         }
-        private float AttainableSeverity => TotalAttainableSeverity - totalSeverityGained;
+        protected virtual float AttainableSeverity => TotalAttainableSeverity - totalSeverityGained;
 
-        private float SeverityGainFactor => Mathf.Max(0.2f, Mathf.Sqrt(totalThreatSignificance));
+        protected virtual float SeverityGainFactor =>
+            Mathf.Sqrt(totalThreatSignificance) * // From threat
+            AdrenalineTracker.AdrenalineRushSeverityGainFactor * // From adrenaline tracker
+            ExtraRaceProps.adrenalineGainFactorNatural; // From extra race properties
 
-        private float SeverityLossFactor => 1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance));
+        protected virtual float SeverityLossFactor =>
+            1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance)) * // From threat
+            ExtraRaceProps.adrenalineLossFactor; // From extra race properties
         #endregion
 
-        private void Reset()
+        public override void Reset()
         {
             peakTotalThreatSignificance = 0;
             totalSeverityGained = Severity;
@@ -56,23 +56,19 @@ namespace Adrenaline
 
         public override void PostMake()
         {
-            ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
+            ticksUntilSeverityLoss = Props.baseSeverityLossDelayTicks;
             base.PostMake();
         }
 
         protected override void UpdateSeverity()
         {
-            // Gain severity if the pawn can naturally gain adrenaline, total severity gained is less than the attainable severity and any threats are present
-            if (ExtraRaceProps.adrenalineGainFactorNatural > 0 && totalThreatSignificance > 0 && totalSeverityGained < TotalAttainableSeverity && AdrenalineTracker.CanGainAdrenaline)
+            // Gain severity if there are any threats, any more severity can be gained and the pawn can currently produce adrenaline
+            if (totalThreatSignificance > 0 && totalSeverityGained < TotalAttainableSeverity && AdrenalineTracker.CanProduceAdrenaline)
             {
-                if (ticksUntilSeverityLoss < BaseSeverityLossDelayTicks)
-                    ticksUntilSeverityLoss = BaseSeverityLossDelayTicks;
+                if (ticksUntilSeverityLoss < Props.baseSeverityLossDelayTicks)
+                    ticksUntilSeverityLoss = Props.baseSeverityLossDelayTicks;
 
-                float severityToGain = Mathf.Min(AttainableSeverity, 
-                    BaseSeverityGainPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
-                    AdrenalineTracker.AdrenalineRushSeverityGainFactor * // From tracker
-                    ExtraRaceProps.adrenalineGainFactorNatural * // From extra race properties
-                    SeverityGainFactor); // From threats
+                float severityToGain = Mathf.Min(AttainableSeverity, Props.baseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityGainFactor);
 
                 Severity += severityToGain;
                 totalSeverityGained += severityToGain;
@@ -82,13 +78,7 @@ namespace Adrenaline
             else
             {
                 if (ticksUntilSeverityLoss <= 0)
-                {
-                    float severityToLose = BaseSeverityLossPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks * // Baseline
-                        ExtraRaceProps.adrenalineLossFactor * // From extra race properties
-                        SeverityLossFactor; // From threats
-
-                    Severity -= severityToLose;
-                }
+                    Severity -= Props.baseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityLossFactor;
 
                 else
                     ticksUntilSeverityLoss -= SeverityUpdateIntervalTicks;
@@ -99,21 +89,24 @@ namespace Adrenaline
             
         }
 
+        protected virtual void UpdateTotalThreatSignificance()
+        {
+            float previousTotalThreatSignificance = totalThreatSignificance;
+            totalThreatSignificance = AdrenalineUtility.GetPerceivedThreatsFor(pawn).Sum(t => t.PerceivedThreatSignificanceFor(pawn));
+
+            // If severity was dropping, threat significance had hit 0 and there are new threats, reset peakTotalThreatSignificance and set totalSeverityGained to current severity
+            if (ticksUntilSeverityLoss == 0 && previousTotalThreatSignificance == 0 && totalThreatSignificance > previousTotalThreatSignificance)
+                Reset();
+
+            if (totalThreatSignificance > peakTotalThreatSignificance)
+                peakTotalThreatSignificance = totalThreatSignificance;
+        }
+
         public override void Tick()
         {
             // Update peak total threat significance
             if (ageTicks % HealthTuning.HediffGiverUpdateInterval == 0)
-            {
-                float previousTotalThreatSignificance = totalThreatSignificance;
-                totalThreatSignificance = AdrenalineUtility.GetPerceivedThreatsFor(pawn).Sum(t => t.PerceivedThreatSignificanceFor(pawn));
-
-                // If severity was dropping, threat significance had hit 0 and there are new threats, reset peakTotalThreatSignificance and set totalSeverityGained to current severity
-                if (ticksUntilSeverityLoss == 0 && previousTotalThreatSignificance == 0 && totalThreatSignificance > previousTotalThreatSignificance)
-                    Reset();
-
-                if (totalThreatSignificance > peakTotalThreatSignificance)
-                    peakTotalThreatSignificance = totalThreatSignificance;
-            }
+                UpdateTotalThreatSignificance();
 
             base.Tick();
         }

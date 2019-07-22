@@ -25,17 +25,13 @@ namespace Adrenaline
 
             public static void Postfix(Pawn attacker, ref float __result)
             {
-                // If an attacker exists and has an adrenaline rush hediff, multiply based on the stage
+                // If an attacker exists, go through each hediff and multiply damage by the hediff's melee damage factor
                 if (attacker != null)
                 {
-                    var extraRaceProps = attacker.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
-                    var adrenalineHediff = attacker.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff);
-                    if (adrenalineHediff != null)
+                    foreach (var hediff in attacker.health.hediffSet.hediffs)
                     {
-                        var hediffDefExtension = adrenalineHediff.def.GetModExtension<HediffDefExtension>() ?? HediffDefExtension.defaultValues;
-                        var extraHediffStageProps = hediffDefExtension.GetExtraHediffStagePropertiesAt(adrenalineHediff.CurStageIndex);
-                        Log.Message(extraHediffStageProps.meleeDamageFactor.ToString());
-                        __result *= extraHediffStageProps.meleeDamageFactor;
+                        var hediffDefExtension = hediff.def.GetModExtension<HediffDefExtension>() ?? HediffDefExtension.defaultValues;
+                        __result *= hediffDefExtension.GetExtraHediffStagePropertiesAt(hediff.CurStageIndex).meleeDamageFactor;
                     }
                 }
             }

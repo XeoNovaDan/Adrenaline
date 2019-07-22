@@ -33,6 +33,10 @@ namespace Adrenaline
 
         private List<ExtraHediffStageProperties> stages;
 
+        public AdrenalineRushProperties adrenalineRush;
+
+        public AdrenalineCrashProperties adrenalineCrash;
+
     }
 
 }

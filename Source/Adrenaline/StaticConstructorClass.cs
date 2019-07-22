@@ -20,13 +20,15 @@ namespace Adrenaline
         static StaticConstructorClass()
         {
 
-            // Add CompAdrenalineTracker to each eligible pawn def
+            // Add CompAdrenalineTracker to each eligible pawn def that doesn't already have one
             foreach (var tDef in DefDatabase<ThingDef>.AllDefs)
                 if (tDef.CanGetAdrenaline())
                 {
                     if (tDef.comps == null)
                         tDef.comps = new List<CompProperties>();
-                    tDef.comps.Add(new CompProperties(typeof(CompAdrenalineTracker)));
+
+                    if (!tDef.comps.Any(c => c.GetType() == typeof(CompProperties_AdrenalineTracker)))
+                        tDef.comps.Add(new CompProperties_AdrenalineTracker());
                 }
 
         }

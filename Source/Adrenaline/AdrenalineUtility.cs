@@ -154,6 +154,14 @@ namespace Adrenaline
             return tDef.race != null && extraRaceProps.HasAdrenaline && (tDef.race.hediffGiverSets?.Any(h => h.hediffGivers.Any(g => g.GetType() == typeof(HediffGiver_Adrenaline))) ?? false);
         }
 
+        public static float TotalPainFactor(this Pawn pawn)
+        {
+            float factor = 1;
+            foreach (var hediff in pawn.health.hediffSet.hediffs)
+                factor *= hediff.PainFactor;
+            return factor;
+        }
+
     }
 
 }

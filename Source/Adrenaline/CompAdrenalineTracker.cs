@@ -15,8 +15,6 @@ namespace Adrenaline
     {
 
         private const int UpdateIntervalTicks = 20;
-        private const int MaxCumulativeAdrenalineRushSeverity = GenDate.TicksPerHour * 2;
-        private const float MinAdrenalineRushSeverityGainFactor = 0.25f;
 
         private float cumulativeAdrenalineRushSeverity;
 
@@ -24,18 +22,38 @@ namespace Adrenaline
 
         private ExtendedRaceProperties ExtraRaceProps => parent.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
 
+        private CompProperties_AdrenalineTracker Props => (CompProperties_AdrenalineTracker)props;
+
         public float CumulativeAdrenalineRushSeverity
         {
             get => cumulativeAdrenalineRushSeverity;
             set
             {
-                cumulativeAdrenalineRushSeverity = Mathf.Clamp(value, 0, MaxCumulativeAdrenalineRushSeverity);
+                cumulativeAdrenalineRushSeverity = Mathf.Clamp(value, 0, Props.maxCumulativeAdrenalineRushSeverity);
             }
         }
 
-        public float AdrenalineRushSeverityGainFactor => Mathf.Lerp(MinAdrenalineRushSeverityGainFactor, 1, CumulativeAdrenalineRushSeverity / MaxCumulativeAdrenalineRushSeverity);
+        public float AdrenalineRushSeverityGainFactor => Mathf.Lerp(1, Props.minAdrenalineRushSeverityGainFactor, CumulativeAdrenalineRushSeverity / Props.maxCumulativeAdrenalineRushSeverity);
 
-        public bool CanGainAdrenaline => CumulativeAdrenalineRushSeverity < MaxCumulativeAdrenalineRushSeverity;
+        public bool CanProduceAdrenaline
+        {
+            get
+            {
+                // Can't naturally produce adrenaline
+                if (ExtraRaceProps.adrenalineGainFactorNatural == 0)
+                    return false;
+
+                // Cool-headed
+                if (Pawn.story != null && Pawn.story.traits.HasTrait(A_TraitDefOf.CoolHeaded))
+                    return false;
+
+                // Had a lot of adrenaline recently
+                if (CumulativeAdrenalineRushSeverity >= Props.maxCumulativeAdrenalineRushSeverity)
+                    return false;
+
+                return true;
+            }
+        }
 
         public override void CompTick()
         {

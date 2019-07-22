@@ -131,25 +131,30 @@
             </li>
 
         </stages>
-
         <modExtensions>
             <li Class="Adrenaline.HediffDefExtension">
+                <adrenalineRush>
+                    <baseAttainableSeverityGainPerPeakTotalThreatSignificance>0.65</baseAttainableSeverityGainPerPeakTotalThreatSignificance>
+                    <baseSeverityGainPerDay>28.8</baseSeverityGainPerDay> <!-- 1.2 per hour -->
+                    <baseSeverityLossDelayTicks>300</baseSeverityLossDelayTicks>
+                    <baseSeverityLossPerDay>40.8</baseSeverityLossPerDay> <!-- 1.7 per hour -->
+                </adrenalineRush>
                 <stages>
                     <!-- Slight -->
                     <li>
-                        <meleeDamageFactor>1.075</meleeDamageFactor>
+                        <meleeDamageFactor>1.05</meleeDamageFactor>
                     </li>
 
                     <!-- Moderate -->
                     <li>
                         <index>1</index>
-                        <meleeDamageFactor>1.15</meleeDamageFactor>
+                        <meleeDamageFactor>1.125</meleeDamageFactor>
                     </li>
 
                     <!-- Intense -->
                     <li>
                         <index>2</index>
-                        <meleeDamageFactor>1.225</meleeDamageFactor>
+                        <meleeDamageFactor>1.2</meleeDamageFactor>
                     </li>
 
                     <!-- Extreme -->
@@ -188,7 +193,7 @@
                 <statOffsets>
                     <MentalBreakThreshold>0.02</MentalBreakThreshold>
                 </statOffsets>
-                <restFallFactorOffset>0.1</restFallFactorOffset>
+                <restFallFactorOffset>0.3</restFallFactorOffset>
                 <vomitMtbDays>5</vomitMtbDays>
             </li>
 
@@ -204,7 +209,7 @@
                 <statOffsets>
                     <MentalBreakThreshold>0.04</MentalBreakThreshold>
                 </statOffsets>
-                <restFallFactorOffset>0.3</restFallFactorOffset>
+                <restFallFactorOffset>0.5</restFallFactorOffset>
                 <vomitMtbDays>3</vomitMtbDays>
             </li>
 
@@ -220,7 +225,7 @@
                 <statOffsets>
                     <MentalBreakThreshold>0.06</MentalBreakThreshold>
                 </statOffsets>
-                <restFallFactorOffset>0.6</restFallFactorOffset>
+                <restFallFactorOffset>0.7</restFallFactorOffset>
                 <vomitMtbDays>2</vomitMtbDays>
             </li>
 
@@ -241,6 +246,16 @@
             </li>
 
         </stages>
+        <modExtensions>
+            <li Class="Adrenaline.HediffDefExtension">
+                <adrenalineCrash>
+                    <attainableSeverityPerAdrenalineRushHediffSeverityPerHour>0.5</attainableSeverityPerAdrenalineRushHediffSeverityPerHour>
+                    <baseSeverityGainPerDay>3</baseSeverityGainPerDay>
+                    <baseTicksAtPeakSeverityBeforeSeverityLoss>42000</baseTicksAtPeakSeverityBeforeSeverityLoss>
+                    <baseSeverityLossPerDay>0.4</baseSeverityLossPerDay>
+                </adrenalineCrash>
+            </li>
+        </modExtensions>
     </HediffDef>
 
 </Defs>
