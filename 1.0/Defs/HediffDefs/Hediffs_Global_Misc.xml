@@ -121,7 +121,7 @@
                 <hediffGivers>
                     <li Class="HediffGiver_Random">
                         <hediff>HeartAttack</hediff>
-                        <mtbDays>1.2</mtbDays>
+                        <mtbDays>1.7</mtbDays>
                         <partsToAffect>
                             <li>Heart</li>
                         </partsToAffect>
@@ -248,8 +248,8 @@
                 <adrenalineCrash>
                     <attainableSeverityPerAdrenalineRushHediffSeverityPerHour>0.5</attainableSeverityPerAdrenalineRushHediffSeverityPerHour>
                     <baseSeverityGainPerDay>3</baseSeverityGainPerDay>
-                    <baseTicksAtPeakSeverityBeforeSeverityLoss>42000</baseTicksAtPeakSeverityBeforeSeverityLoss>
-                    <baseSeverityLossPerDay>0.4</baseSeverityLossPerDay>
+                    <baseTicksAtPeakSeverityBeforeSeverityLoss>30000</baseTicksAtPeakSeverityBeforeSeverityLoss>
+                    <baseSeverityLossPerDay>0.5</baseSeverityLossPerDay>
                 </adrenalineCrash>
             </li>
         </modExtensions>

@@ -106,7 +106,7 @@ namespace Adrenaline
             if (pawn.RaceProps.Animal)
             {
                 if (t is Pawn p)
-                    return p.BodySize / pawn.BodySize;
+                    return (p.BodySize * p.health.summaryHealth.SummaryHealthPercent) / (pawn.BodySize * pawn.health.summaryHealth.SummaryHealthPercent);
                 throw new NotImplementedException();
             }
 
@@ -132,18 +132,33 @@ namespace Adrenaline
                 else
                     combatPower = p.kindDef.combatPower;
 
-                return combatPower * p.health.summaryHealth.SummaryHealthPercent;
+                return combatPower * p.health.summaryHealth.SummaryHealthPercent * p.ageTracker.CurLifeStage.bodySizeFactor;
             }
 
             // Turret
             if (t is Building_Turret turret)
             {
-                // Return 1/10th of its base market value
-                return turret.def.GetStatValueAbstract(StatDefOf.MarketValue, null) / 10;
+                // Return 1/6th of its base market value
+                return turret.def.GetStatValueAbstract(StatDefOf.MarketValue, null) / 6;
             }
 
             throw new NotImplementedException($"Unaccounted effective combat power calculation for {t} (Type={t.GetType().Name})");
 
+        }
+
+        public static bool IsHunting(this Pawn pawn, Pawn prey)
+        {
+            if (pawn.CurJob == null)
+                return false;
+
+            // Humanlike hunting
+            var jobDriver_Hunt = pawn.jobs.curDriver as JobDriver_Hunt;
+            if (jobDriver_Hunt != null)
+                return jobDriver_Hunt.Victim == prey;
+
+            // Predator hunting
+            var jobDriver_PredatorHunt = pawn.jobs.curDriver as JobDriver_PredatorHunt;
+            return jobDriver_PredatorHunt != null && jobDriver_PredatorHunt.Prey == prey;
         }
 
         public static bool CanGetAdrenaline(this Pawn p) => p.def.CanGetAdrenaline();
