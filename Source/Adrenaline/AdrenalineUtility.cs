@@ -102,17 +102,34 @@ namespace Adrenaline
 
         public static float PerceivedThreatSignificanceFor(this Thing t, Pawn pawn)
         {
+            var tWC = t as ThingWithComps;
+            var p = t as Pawn;
+            float threatSignificance = 0;
+
             // If the adrenaline gainee is an animal, only factor in the other thing's body size relative to the animal's body size
             if (pawn.RaceProps.Animal)
             {
-                if (t is Pawn p)
-                    return (p.BodySize * p.health.summaryHealth.SummaryHealthPercent) / (pawn.BodySize * pawn.health.summaryHealth.SummaryHealthPercent);
-                throw new NotImplementedException();
+                if (p != null)
+                    threatSignificance += (p.BodySize * p.health.summaryHealth.SummaryHealthPercent) / (pawn.BodySize * pawn.health.summaryHealth.SummaryHealthPercent);
+                else
+                    throw new NotImplementedException();
             }
 
             // Otherwise factor in 'effective combat power'
             else
-                return t.EffectiveCombatPower() / pawn.EffectiveCombatPower();
+            {
+                threatSignificance += t.EffectiveCombatPower() / pawn.EffectiveCombatPower();
+
+                // If threat is either manning a thing or being manned, halve the significance to reduce overlap
+                if ((p != null && p.MannedThing() != null) || (tWC != null && tWC.GetComp<CompMannable>() is CompMannable mannableComp && mannableComp.MannedNow))
+                    threatSignificance /= 2;
+            }
+
+            // If pawn is hunting t and t is not fighting pawn, cut threat significance by 2/3
+            if (p != null && pawn.IsHunting(p) && (!p.IsFighting() || !p.CurJob.AnyTargetIs(pawn)))
+                threatSignificance /= 3;
+
+            return threatSignificance;
         }
 
         public static float EffectiveCombatPower(this Thing t)

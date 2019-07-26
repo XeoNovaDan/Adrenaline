@@ -50,14 +50,12 @@ namespace Adrenaline
                     if (injury == null || injury.IsPermanent() || pawn.Dead)
                         return false;
 
-                    // Try and add severity based on the pain caused by the injury
+                    // Try to add target severity based on the pain caused by the injury
                     float painFromInjury = injury.PainOffset / pawn.HealthScale * pawn.TotalPainFactor();
                     if (painFromInjury > 0)
                     {
-                        float severityToAdd = painFromInjury * adrenalineTracker.AdrenalineProductionFactor;
-                        HealthUtility.AdjustSeverity(pawn, extraRaceProps.adrenalineRushHediff, severityToAdd);
-                        var rushHediff = (Hediff_AdrenalineRush)pawn.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff);
-                        rushHediff.severityLossDelayTicks += (int)(severityToAdd * BaseAdrenalineLossDelay);
+                        var rushhediff = (Hediff_AdrenalineRush)(pawn.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff) ?? pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff));
+                        rushhediff.recentPainFelt += painFromInjury;
                         return true;
                     }
                 }

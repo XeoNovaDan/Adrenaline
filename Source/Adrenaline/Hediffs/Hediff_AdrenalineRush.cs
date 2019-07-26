@@ -16,36 +16,38 @@ namespace Adrenaline
 
         #region Fields
         protected float totalThreatSignificance; // Determines severity gain/loss rate
+        public float recentPainFelt;
         public int severityLossDelayTicks;
         #endregion
 
         #region Properties
         public AdrenalineRushProperties Props => def.GetModExtension<HediffDefExtension>().adrenalineRush;
-
         protected virtual float TargetSeverity
         {
             get
             {
                 float modifiedThreatSignificance = totalThreatSignificance < 1 ? totalThreatSignificance : Mathf.Sqrt(totalThreatSignificance);
-                return modifiedThreatSignificance * Props.targetSeverityPerTotalThreatSignificance * AdrenalineTracker.AdrenalineProductionFactor;
+                return ((modifiedThreatSignificance * Props.targetSeverityPerTotalThreatSignificance) + (recentPainFelt * Props.targetSeverityPerRecentPainFelt)) * AdrenalineTracker.AdrenalineProductionFactor;
             }
         }
 
-        protected virtual float SeverityGainFactor => Mathf.Sqrt(totalThreatSignificance) * AdrenalineTracker.AdrenalineProductionFactor;
+        protected virtual float SeverityGainFactor => Mathf.Sqrt(totalThreatSignificance + recentPainFelt) * AdrenalineTracker.AdrenalineProductionFactor;
 
-        protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance))) + Mathf.Max(0, 1 - AdrenalineTracker.AdrenalineProductionFactor)) * ExtraRaceProps.adrenalineLossFactor;
+        protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance + recentPainFelt))) + Mathf.Max(0, 1 - AdrenalineTracker.AdrenalineProductionFactor)) * ExtraRaceProps.adrenalineLossFactor;
         #endregion
 
         protected override void UpdateSeverity()
         {
+
             // Gain severity if it is less than target severity
             if (Severity < TargetSeverity)
                 Severity += Mathf.Min(TargetSeverity - Severity, Props.baseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityGainFactor);
 
             // Otherwise drop severity if appropriate
-            else if(severityLossDelayTicks <= 0)
+            else if (severityLossDelayTicks <= 0)
                 Severity -= Mathf.Min(Severity - TargetSeverity, Props.baseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityLossFactor);
 
+            recentPainFelt -= Mathf.Min(recentPainFelt, 1f / GenDate.TicksPerHour * SeverityUpdateIntervalTicks);
             severityLossDelayTicks -= Mathf.Min(severityLossDelayTicks, SeverityUpdateIntervalTicks);
 
             // Update adrenaline tracker
@@ -80,6 +82,7 @@ namespace Adrenaline
         public override void ExposeData()
         {
             Scribe_Values.Look(ref totalThreatSignificance, "totalThreatSignificance");
+            Scribe_Values.Look(ref recentPainFelt, "recentPainFelt");
             Scribe_Values.Look(ref severityLossDelayTicks, "severityLossDelayTicks");
 
             base.ExposeData();

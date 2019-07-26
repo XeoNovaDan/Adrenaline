@@ -16,6 +16,8 @@ namespace Adrenaline
 
         public float targetSeverityPerTotalThreatSignificance;
 
+        public float targetSeverityPerRecentPainFelt;
+
         public float baseSeverityGainPerDay;
 
         public int baseSeverityLossDelayTicks;
