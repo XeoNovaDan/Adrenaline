@@ -135,8 +135,9 @@
             <li Class="Adrenaline.HediffDefExtension">
                 <adrenalineRush>
                     <targetSeverityPerTotalThreatSignificance>0.65</targetSeverityPerTotalThreatSignificance>
-                    <targetSeverityPerRecentPainFelt>1.6</targetSeverityPerRecentPainFelt>
+                    <targetSeverityPerRecentPainFelt>1.7</targetSeverityPerRecentPainFelt>
                     <baseSeverityGainPerDay>28.8</baseSeverityGainPerDay> <!-- 1.2 per hour -->
+                    <severityGainFactorOffsetPerRecentPainFelt>4.5</severityGainFactorOffsetPerRecentPainFelt>
                     <baseSeverityLossDelayTicks>300</baseSeverityLossDelayTicks>
                     <baseSeverityLossPerDay>40.8</baseSeverityLossPerDay> <!-- 1.7 per hour -->
                 </adrenalineRush>

@@ -31,9 +31,10 @@ namespace Adrenaline
             }
         }
 
-        protected virtual float SeverityGainFactor => Mathf.Sqrt(totalThreatSignificance + recentPainFelt) * AdrenalineTracker.AdrenalineProductionFactor;
+        protected virtual float SeverityGainFactor => (Mathf.Sqrt(totalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)) * AdrenalineTracker.AdrenalineProductionFactor;
 
-        protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance + recentPainFelt))) + Mathf.Max(0, 1 - AdrenalineTracker.AdrenalineProductionFactor)) * ExtraRaceProps.adrenalineLossFactor;
+        protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)))
+            + Mathf.Max(0, 1 - AdrenalineTracker.AdrenalineProductionFactor)) * ExtraRaceProps.adrenalineLossFactor;
         #endregion
 
         protected override void UpdateSeverity()
@@ -47,7 +48,7 @@ namespace Adrenaline
             else if (severityLossDelayTicks <= 0)
                 Severity -= Mathf.Min(Severity - TargetSeverity, Props.baseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityLossFactor);
 
-            recentPainFelt -= Mathf.Min(recentPainFelt, 1f / GenDate.TicksPerHour * SeverityUpdateIntervalTicks);
+            recentPainFelt -= Mathf.Min(recentPainFelt, 2f / GenDate.TicksPerHour * SeverityUpdateIntervalTicks);
             severityLossDelayTicks -= Mathf.Min(severityLossDelayTicks, SeverityUpdateIntervalTicks);
 
             // Update adrenaline tracker

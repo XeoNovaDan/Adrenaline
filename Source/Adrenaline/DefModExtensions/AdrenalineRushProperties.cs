@@ -20,6 +20,8 @@ namespace Adrenaline
 
         public float baseSeverityGainPerDay;
 
+        public float severityGainFactorOffsetPerRecentPainFelt;
+
         public int baseSeverityLossDelayTicks;
 
         public float baseSeverityLossPerDay;

@@ -84,16 +84,18 @@ namespace Adrenaline
         public static bool InCombatWith(this Pawn pawn, Pawn p)
         {
             // pawn is actively targeting p
-            if (pawn.IsFighting() && pawn.CurJob.AnyTargetIs(p))
+            if (pawn.IsAttacking(p))
                 return true;
 
             // p is actively targeting pawn and has made attacks
             var battle = pawn.records.BattleActive;
-            if (p.IsFighting() && p.CurJob.AnyTargetIs(pawn) && battle != null && battle.Concerns(p))
+            if (p.IsAttacking(pawn) && battle != null && battle.Concerns(p))
                 return true;
 
             return false;
         }
+
+        public static bool IsAttacking(this Pawn pawn, Pawn p) => pawn.IsFighting() && pawn.CurJob.AnyTargetIs(p);
 
         public static bool IsPotentialPerceivableThreat(this Thing t)
         {
@@ -125,8 +127,8 @@ namespace Adrenaline
                     threatSignificance /= 2;
             }
 
-            // If pawn is hunting t and t is not fighting pawn, cut threat significance by 2/3
-            if (p != null && pawn.IsHunting(p) && (!p.IsFighting() || !p.CurJob.AnyTargetIs(pawn)))
+            // If pawn is attacking p but p isn't attacking pawn, reduce significance by 2/3
+            if (p != null && pawn.IsAttacking(p) && !p.IsAttacking(pawn))
                 threatSignificance /= 3;
 
             return threatSignificance;
@@ -161,21 +163,6 @@ namespace Adrenaline
 
             throw new NotImplementedException($"Unaccounted effective combat power calculation for {t} (Type={t.GetType().Name})");
 
-        }
-
-        public static bool IsHunting(this Pawn pawn, Pawn prey)
-        {
-            if (pawn.CurJob == null)
-                return false;
-
-            // Humanlike hunting
-            var jobDriver_Hunt = pawn.jobs.curDriver as JobDriver_Hunt;
-            if (jobDriver_Hunt != null)
-                return jobDriver_Hunt.Victim == prey;
-
-            // Predator hunting
-            var jobDriver_PredatorHunt = pawn.jobs.curDriver as JobDriver_PredatorHunt;
-            return jobDriver_PredatorHunt != null && jobDriver_PredatorHunt.Prey == prey;
         }
 
         public static bool CanGetAdrenaline(this Pawn p) => p.def.CanGetAdrenaline();
