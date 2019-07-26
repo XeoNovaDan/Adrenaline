@@ -14,8 +14,6 @@ namespace Adrenaline
     public class HediffGiver_Adrenaline : HediffGiver
     {
 
-        private const int BaseAdrenalineLossDelay = 300;
-
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
         {
             var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
