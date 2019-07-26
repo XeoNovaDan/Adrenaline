@@ -61,8 +61,8 @@ namespace Adrenaline
         public override string DebugString()
         {
             var debugBuilder = new StringBuilder();
-            debugBuilder.AppendLine($"unclamped target severity: {TargetSeverityUnclamped}".Indented("    "));
-            debugBuilder.AppendLine($"ticks at target severity: {ticksAtTargetSeverity}".Indented("    "));
+            debugBuilder.AppendLine($"unclamped target severity: {TargetSeverityUnclamped}".Indented());
+            debugBuilder.AppendLine($"ticks at target severity: {ticksAtTargetSeverity}".Indented());
             debugBuilder.AppendLine(base.DebugString());
             return debugBuilder.ToString();
         }

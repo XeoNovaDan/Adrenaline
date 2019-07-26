@@ -72,9 +72,11 @@ namespace Adrenaline
         public override string DebugString()
         {
             var debugBuilder = new StringBuilder();
-            debugBuilder.AppendLine($"target severity: {TargetSeverity}".Indented("    "));
-            debugBuilder.AppendLine($"severity gain factor: {SeverityGainFactor}".Indented("    "));
-            debugBuilder.AppendLine($"severity loss factor: {SeverityLossFactor}".Indented("    "));
+            debugBuilder.AppendLine($"target severity: {TargetSeverity}".Indented());
+            debugBuilder.AppendLine($"total threat significance: {totalThreatSignificance}".Indented().Indented());
+            debugBuilder.AppendLine($"recent pain felt: {recentPainFelt}".Indented().Indented());
+            debugBuilder.AppendLine($"severity gain factor: {SeverityGainFactor}".Indented());
+            debugBuilder.AppendLine($"severity loss factor: {SeverityLossFactor}".Indented());
             debugBuilder.AppendLine(base.DebugString());
             return debugBuilder.ToString();
         }
