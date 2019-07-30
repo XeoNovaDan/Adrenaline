@@ -4,7 +4,9 @@
     <Operation Class="PatchOperationAdd">
         <xpath>/Defs/HediffGiverSetDef[defName="OrganicStandard"]/hediffGivers</xpath>
         <value>
-            <li Class="Adrenaline.HediffGiver_Adrenaline"/>
+            <li Class="Adrenaline.HediffGiver_Adrenaline">
+                <hediff>Adrenaline</hediff>
+            </li>
         </value>
     </Operation>
 
