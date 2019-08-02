@@ -25,7 +25,10 @@ namespace Adrenaline
 
                 // If the pawn can produce adrenaline and doesn't already have an adrenaline rush, add adrenaline rush
                 if (adrenalineTracker.CanProduceAdrenaline && !hasRush && AdrenalineUtility.GetPerceivedThreatsFor(pawn).Any())
+                {
+                    TryTeachAdrenalineConcept(pawn);
                     pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff);
+                }   
 
                 // Otherwise if they have an adrenaline rush and don't have an adrenaline crash hediff, add an adrenaline crash hediff
                 else if (hasRush && extraRaceProps.adrenalineCrashHediff != null && !pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineCrashHediff))
@@ -52,6 +55,7 @@ namespace Adrenaline
                     float painFromInjury = injury.PainOffset / pawn.HealthScale * pawn.TotalPainFactor();
                     if (painFromInjury > 0)
                     {
+                        TryTeachAdrenalineConcept(pawn);
                         var rushhediff = (Hediff_AdrenalineRush)(pawn.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff) ?? pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff));
                         rushhediff.recentPainFelt += painFromInjury;
                         return true;
@@ -60,6 +64,12 @@ namespace Adrenaline
             }
 
             return false;
+        }
+
+        private void TryTeachAdrenalineConcept(Pawn pawn)
+        {
+            if (pawn.Faction == Faction.OfPlayer && !PlayerKnowledgeDatabase.IsComplete(A_ConceptDefOf.Adrenaline))
+                LessonAutoActivator.TeachOpportunity(A_ConceptDefOf.Adrenaline, OpportunityType.Important);
         }
 
     }

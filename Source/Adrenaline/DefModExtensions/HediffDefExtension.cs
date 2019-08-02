@@ -23,9 +23,9 @@ namespace Adrenaline
 
         private List<ExtraHediffStageProperties> stages;
 
-        public AdrenalineRushProperties adrenalineRush;
+        public AdrenalineRushProperties adrenalineRush = new AdrenalineRushProperties();
 
-        public AdrenalineCrashProperties adrenalineCrash;
+        public AdrenalineCrashProperties adrenalineCrash = new AdrenalineCrashProperties();
 
     }
 

@@ -17,8 +17,7 @@ namespace Adrenaline
     public static class Patch_Pawn
     {
 
-        [HarmonyPatch(typeof(Pawn))]
-        [HarmonyPatch(nameof(Pawn.GetGizmos))]
+        [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetGizmos))]
         public static class Patch_GetGizmos
         {
 
@@ -27,24 +26,32 @@ namespace Adrenaline
                 // If the pawn is downed, is a colonist and can take adrenaline, add a 'take adrenaline' gizmo
                 if (__instance.Downed && __instance.IsColonistPlayerControlled && __instance.CanGetAdrenaline())
                 {
-                    var adrenalineCells = __instance.CellsAdjacent8WayAndInside().Where(c => c.GetFirstThing(__instance.Map, A_ThingDefOf.Adrenaline) != null);
-                    var adrenalineGizmo = new Command_Action()
+                    var extraRaceProps = __instance.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
+                    foreach (var tDef in extraRaceProps.RelevantConsumablesDowned)
                     {
-                        defaultLabel = "Adrenaline.Command_TakeAdrenaline".Translate(),
-                        defaultDesc = "Adrenaline.Command_TakeAdrenaline_Description".Translate(),
-                        icon = A_TexCommand.Adrenaline,
-                        action = () => adrenalineCells.First().GetFirstThing(__instance.Map, A_ThingDefOf.Adrenaline).Ingested(__instance, 0)
-                    };
+                        var thingDefExtension = tDef.GetModExtension<ThingDefExtension>() ?? ThingDefExtension.defaultValues;
 
-                    // No adrenaline nearby
-                    if (!adrenalineCells.Any())
-                        adrenalineGizmo.Disable("Adrenaline.Command_TakeAdrenaline_FailNoAdrenaline".Translate());
+                        bool anyNearbyAdrenaline = AdrenalineUtility.AnyNearbyAdrenaline(__instance, tDef, out List<Thing> adrenalineThings);
+                        var adrenalineGizmo = new Command_Action()
+                        {
+                            defaultLabel = thingDefExtension.downedIngestGizmoLabel,
+                            defaultDesc = thingDefExtension.downedIngestGizmoDescription,
+                            action = () => adrenalineThings.First().Ingested(__instance, 0)
+                        };
+                        if (AdrenalineUtility.adrenalineGizmoIcons.TryGetValue(tDef, out Texture2D icon))
+                            adrenalineGizmo.icon = icon;
 
-                    // Can't do manipulation
-                    else if (!__instance.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
-                        adrenalineGizmo.Disable("Adrenaline.Command_TakeAdrenaline_FailNoManipulation".Translate(__instance.LabelShort));
+                        // No adrenaline nearby
+                        if (!anyNearbyAdrenaline)
+                            adrenalineGizmo.Disable(thingDefExtension.downedIngestGizmoNoneNearby);
 
-                    __result = __result.Add(adrenalineGizmo);
+                        // Can't do manipulation
+                        else if (!__instance.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+                            adrenalineGizmo.Disable("Adrenaline.Command_TakeAdrenaline_FailNoManipulation".Translate(__instance.LabelShort));
+
+                        __result = __result.Add(adrenalineGizmo);
+
+                    }
                 }
             }
 

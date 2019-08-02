@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <ConceptDef>
+        <defName>Adrenaline</defName>
+        <label>Adrenaline</label>
+        <priority>50</priority>
+        <needsOpportunity>True</needsOpportunity>
+        <helpText>Biological pawns get adrenaline rushes when in combat, which makes them fight better in the heat of the action. Hoewever, they may experience 'adrenaline crashes' afterwards, which makes them lethargic for a while.</helpText>
+    </ConceptDef>
+
+</Defs>

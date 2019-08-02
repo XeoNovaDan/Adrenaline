@@ -38,6 +38,8 @@ namespace Adrenaline
             }
         };
 
+        public static Dictionary<ThingDef, Texture2D> adrenalineGizmoIcons = new Dictionary<ThingDef, Texture2D>();
+
         public static IEnumerable<Thing> GetPerceivedThreatsFor(Pawn pawn)
         {
             if (pawn.Map == null)
@@ -180,6 +182,32 @@ namespace Adrenaline
                 factor *= hediff.PainFactor;
             return factor;
         }
+
+        public static bool AnyNearbyAdrenaline(Thing t, List<ThingDef> aDefs, out List<Thing> adrenalineThings)
+        {
+            adrenalineThings = new List<Thing>();
+
+            if (t.Map == null)
+                return false;
+
+            // Go through each cell adjacent to t, then check that cell for if it has any things that match anything in aDefs
+            foreach (var c in t.CellsAdjacent8WayAndInside())
+            {
+                if (!c.InBounds(t.Map))
+                    continue;
+
+                foreach (var aDef in aDefs)
+                {
+                    var thing = c.GetFirstThing(t.Map, aDef);
+                    if (thing != null && thing.IngestibleNow)
+                        adrenalineThings.Add(thing);
+                }
+            }
+
+            return adrenalineThings.Any();
+        }
+
+        public static bool AnyNearbyAdrenaline(Thing t, ThingDef aDef, out List<Thing> adrenalineThings) => AnyNearbyAdrenaline(t, new List<ThingDef>(new ThingDef[1] { aDef }), out adrenalineThings);
 
     }
 

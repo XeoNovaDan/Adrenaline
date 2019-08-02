@@ -57,10 +57,13 @@
     <Compile Include="DefModExtensions\AdrenalineCrashProperties.cs" />
     <Compile Include="DefModExtensions\ExtraHediffStageProperties.cs" />
     <Compile Include="DefModExtensions\AdrenalineRushProperties.cs" />
+    <Compile Include="DefModExtensions\ThingDefExtension.cs" />
     <Compile Include="DefModExtensions\HediffDefExtension.cs" />
+    <Compile Include="DefOf\A_ConceptDefOf.cs" />
+    <Compile Include="HarmonyPatches\Patch_Pawn_MindState.cs" />
+    <Compile Include="HarmonyPatches\Patch_PawnInventoryGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnUtility.cs" />
     <Compile Include="StaticConstructorClass.cs" />
-    <Compile Include="A_TexCommand.cs" />
     <Compile Include="Hediffs\Hediff_AdrenalineRush.cs" />
     <Compile Include="Hediffs\Hediff_AdrenalineCrash.cs" />
     <Compile Include="IngestionOutcomeDoer_Adrenaline.cs" />

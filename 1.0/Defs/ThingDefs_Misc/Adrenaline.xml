@@ -65,8 +65,18 @@
         <comps>
             <li Class="CompProperties_Drug">
                 <listOrder>990</listOrder>
+                <isCombatEnhancingDrug>true</isCombatEnhancingDrug>
             </li>
         </comps>
+        <modExtensions>
+            <li Class="Adrenaline.ThingDefExtension">
+                <ingestibleWhenDowned>true</ingestibleWhenDowned>
+                <downedIngestGizmoLabel>Take adrenaline</downedIngestGizmoLabel>
+                <downedIngestGizmoDescription>Inject a nearby adrenaline syringe.</downedIngestGizmoDescription>
+                <downedIngestGizmoTexPath>UI/Commands/Adrenaline</downedIngestGizmoTexPath>
+                <downedIngestGizmoNoneNearby>There are no adrenaline syringes nearby.</downedIngestGizmoNoneNearby>
+            </li>
+        </modExtensions>
     </ThingDef>
 
 </Defs>

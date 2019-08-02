@@ -27,13 +27,17 @@ namespace Adrenaline
                     return;
                 }
 
+                // Do nothing if the pawn can't benefit from the ingested thing
+                var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
+                if (!extraRaceProps.RelevantConsumables.Contains(ingested.def))
+                    return;
+
                 // Determine severity gain
                 float severityGain = (severity > 0) ? severity : hediffDef.initialSeverity;
 
                 if (divideByBodySize)
                     severityGain /= pawn.BodySize;
 
-                var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
                 severityGain *= extraRaceProps.adrenalineGainFactorArtificial;
 
                 // Add severity and increase the duration of the hediff
@@ -55,7 +59,7 @@ namespace Adrenaline
             yield break;
         }
 
-        private HediffDef hediffDef;
+        public HediffDef hediffDef;
 
         private float severity = -1;
 

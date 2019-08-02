@@ -22,6 +22,11 @@ namespace Adrenaline
         {
             var h = HarmonyInstance.Create("XeoNovaDan.Adrenaline");
             h.PatchAll();
+
+            // PawnInventoryGenerator.GiveCombatEnhancingDrugs source predicate
+            Patch_PawnInventoryGenerator.ManualPatch_GiveCombatEnhancingDrugs_source_predicate.predicateType = typeof(PawnInventoryGenerator).GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Instance).First(t => t.Name.Contains("GiveCombatEnhancingDrugs"));
+            h.Patch(Patch_PawnInventoryGenerator.ManualPatch_GiveCombatEnhancingDrugs_source_predicate.predicateType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).First(m => m.ReturnType == typeof(bool)),
+                transpiler: new HarmonyMethod(typeof(Patch_PawnInventoryGenerator.ManualPatch_GiveCombatEnhancingDrugs_source_predicate), "Transpiler"));
         }
 
     }

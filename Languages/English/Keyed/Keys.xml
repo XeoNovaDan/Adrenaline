@@ -1,9 +1,5 @@
 <LanguageData>
 
-    <Adrenaline.Command_TakeAdrenaline>Take adrenaline</Adrenaline.Command_TakeAdrenaline>
-    <Adrenaline.Command_TakeAdrenaline_Description>Inject a nearby adrenaline syringe.</Adrenaline.Command_TakeAdrenaline_Description>
-
     <Adrenaline.Command_TakeAdrenaline_FailNoManipulation>{0} is incapable of manipulation.</Adrenaline.Command_TakeAdrenaline_FailNoManipulation>
-    <Adrenaline.Command_TakeAdrenaline_FailNoAdrenaline>There are no adrenaline syringes nearby.</Adrenaline.Command_TakeAdrenaline_FailNoAdrenaline>
 
 </LanguageData>
