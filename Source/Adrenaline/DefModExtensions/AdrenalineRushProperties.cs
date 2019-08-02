@@ -22,8 +22,6 @@ namespace Adrenaline
 
         public float severityGainFactorOffsetPerRecentPainFelt;
 
-        public int baseSeverityLossDelayTicks;
-
         public float baseSeverityLossPerDay;
 
 
