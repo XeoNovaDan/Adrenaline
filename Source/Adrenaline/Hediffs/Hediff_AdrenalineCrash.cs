@@ -37,7 +37,7 @@ namespace Adrenaline
         {
             // Increase the target severity based on the adrenaline rush's severity
             if (AdrenalineRushHediff != null)
-                TargetSeverityUnclamped += AdrenalineRushHediff.Severity * Props.attainableSeverityPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks; // Factor in time 
+                TargetSeverityUnclamped += AdrenalineRushHediff.Severity * Props.targetSeverityGainPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks; // Factor in time 
 
             // Increase severity if total severity gained is below target severity
             if (Severity < TargetSeverity)

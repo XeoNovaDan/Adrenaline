@@ -247,7 +247,7 @@
         <modExtensions>
             <li Class="Adrenaline.HediffDefExtension">
                 <adrenalineCrash>
-                    <attainableSeverityPerAdrenalineRushHediffSeverityPerHour>0.5</attainableSeverityPerAdrenalineRushHediffSeverityPerHour>
+                    <targetSeverityGainPerAdrenalineRushHediffSeverityPerHour>0.5</targetSeverityGainPerAdrenalineRushHediffSeverityPerHour>
                     <baseSeverityGainPerDay>3</baseSeverityGainPerDay>
                     <baseTicksAtPeakSeverityBeforeSeverityLoss>30000</baseTicksAtPeakSeverityBeforeSeverityLoss>
                     <baseSeverityLossPerDay>0.5</baseSeverityLossPerDay>
