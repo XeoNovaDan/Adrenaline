@@ -251,7 +251,7 @@
                     <severityGainDelay>2500</severityGainDelay>
                     <baseSeverityGainPerDay>3</baseSeverityGainPerDay>
                     <baseTicksAtPeakSeverityBeforeSeverityLoss>20000</baseTicksAtPeakSeverityBeforeSeverityLoss>
-                    <baseSeverityLossPerDay>0.6</baseSeverityLossPerDay>
+                    <baseSeverityLossPerDay>0.7</baseSeverityLossPerDay>
                 </adrenalineCrash>
             </li>
         </modExtensions>
