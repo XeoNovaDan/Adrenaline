@@ -32,7 +32,11 @@ namespace Adrenaline
 
                 // Otherwise if they have an adrenaline rush and don't have an adrenaline crash hediff, add an adrenaline crash hediff
                 else if (hasRush && extraRaceProps.adrenalineCrashHediff != null && !pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineCrashHediff))
-                    pawn.health.AddHediff(extraRaceProps.adrenalineCrashHediff);
+                {
+                    var crashHediff = (Hediff_AdrenalineCrash)pawn.health.AddHediff(extraRaceProps.adrenalineCrashHediff);
+                    crashHediff.ticksToSeverityGain = crashHediff.Props.severityGainDelay;
+                }
+                   
 
             }
         }

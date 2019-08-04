@@ -15,6 +15,7 @@ namespace Adrenaline
     {
 
         #region Fields
+        public int ticksToSeverityGain;
         protected float _targetSeverityUnclamped;
         protected int ticksAtTargetSeverity;
         #endregion
@@ -27,7 +28,16 @@ namespace Adrenaline
             get => Mathf.Max(_targetSeverityUnclamped, 0);
             set => _targetSeverityUnclamped = value;
         }
-        protected virtual float SeverityGainFactor => TargetSeverityUnclamped < 1 ? Mathf.Sqrt(TargetSeverityUnclamped) : TargetSeverityUnclamped;
+        protected virtual float SeverityGainFactor
+        {
+            get
+            {
+                if (TargetSeverityUnclamped < 1)
+                    return Mathf.Sqrt(TargetSeverityUnclamped);
+                return TargetSeverityUnclamped;
+            }
+        }
+
         protected virtual float TargetSeverity => Mathf.Min(TargetSeverityUnclamped, def.maxSeverity);
 
         public override bool ShouldRemove => base.ShouldRemove && TargetSeverity == 0;
@@ -39,8 +49,12 @@ namespace Adrenaline
             if (AdrenalineRushHediff != null)
                 TargetSeverityUnclamped += AdrenalineRushHediff.Severity * Props.targetSeverityGainPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks; // Factor in time 
 
+            // If there's a delay in effect, count down the ticks until severity can increase
+            if (ticksToSeverityGain > 0)
+                ticksToSeverityGain = Mathf.Max(ticksToSeverityGain - SeverityUpdateIntervalTicks, 0);
+
             // Increase severity if total severity gained is below target severity
-            if (Severity < TargetSeverity)
+            else if (Severity < TargetSeverity)
                 Severity += Mathf.Min(TargetSeverity - Severity, Props.baseSeverityGainPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks * SeverityGainFactor);
 
             // Otherwise if it's been a certain amount of time since target severity was hit, drop severity
@@ -61,6 +75,7 @@ namespace Adrenaline
         public override string DebugString()
         {
             var debugBuilder = new StringBuilder();
+            debugBuilder.AppendLine($"ticksToSeverityGain: {ticksToSeverityGain}".Indented());
             debugBuilder.AppendLine($"unclamped target severity: {TargetSeverityUnclamped}".Indented());
             debugBuilder.AppendLine($"ticks at target severity: {ticksAtTargetSeverity}".Indented());
             debugBuilder.AppendLine(base.DebugString());
@@ -69,6 +84,7 @@ namespace Adrenaline
 
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref ticksToSeverityGain, "ticksToSeverityGain");
             Scribe_Values.Look(ref _targetSeverityUnclamped, "targetSeverityUnclamped");
             Scribe_Values.Look(ref ticksAtTargetSeverity, "ticksAtTargetSeverity");
 

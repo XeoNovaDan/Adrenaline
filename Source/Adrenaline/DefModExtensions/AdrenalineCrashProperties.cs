@@ -16,6 +16,8 @@ namespace Adrenaline
 
         public float targetSeverityGainPerAdrenalineRushHediffSeverityPerHour;
 
+        public int severityGainDelay;
+
         public float baseSeverityGainPerDay;
 
         public int baseTicksAtPeakSeverityBeforeSeverityLoss;
