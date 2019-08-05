@@ -21,7 +21,10 @@
         <degreeDatas>
             <li>
                 <label>cool-headed</label>
-                <description>{PAWN_nameDef} tends to keep calm in heated situations and never gets an adrenaline rush from them.</description>
+                <description>{PAWN_nameDef} tends to keep calm in heated situations and generally doesn't an adrenaline rush from them.</description>
+                <statOffsets>
+                    <AdrenalineProduction>-1</AdrenalineProduction>
+                </statOffsets>
             </li>
         </degreeDatas>
         <conflictingTraits>

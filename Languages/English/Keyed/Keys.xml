@@ -1,5 +1,9 @@
 <LanguageData>
 
+    <!-- Gizmos -->
     <Adrenaline.Command_TakeAdrenaline_FailNoManipulation>{0} is incapable of manipulation.</Adrenaline.Command_TakeAdrenaline_FailNoManipulation>
+
+    <!-- StatParts -->
+    <Adrenaline.StatsReport_RecentlyProducedAdrenaline>Recent production</Adrenaline.StatsReport_RecentlyProducedAdrenaline>
 
 </LanguageData>

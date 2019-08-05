@@ -52,8 +52,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompProperties_AdrenalineTracker.cs" />
-    <Compile Include="CompAdrenalineTracker.cs" />
+    <Compile Include="DefOf\A_StatDefOf.cs" />
+    <Compile Include="StatWorker_AdrenalineProduction.cs" />
+    <Compile Include="Comps\CompProperties_AdrenalineTracker.cs" />
+    <Compile Include="Comps\CompAdrenalineTracker.cs" />
     <Compile Include="DefModExtensions\AdrenalineCrashProperties.cs" />
     <Compile Include="DefModExtensions\ExtraHediffStageProperties.cs" />
     <Compile Include="DefModExtensions\AdrenalineRushProperties.cs" />

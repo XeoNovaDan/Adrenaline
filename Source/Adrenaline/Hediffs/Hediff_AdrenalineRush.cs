@@ -22,18 +22,21 @@ namespace Adrenaline
 
         #region Properties
         public AdrenalineRushProperties Props => def.GetModExtension<HediffDefExtension>().adrenalineRush;
+
+        protected virtual float EffectiveTotalThreatSignificance => Mathf.Min(totalThreatSignificance, 5);
+
         protected virtual float TargetSeverity
         {
             get
             {
-                float modifiedThreatSignificance = totalThreatSignificance < 1 ? totalThreatSignificance : Mathf.Sqrt(totalThreatSignificance);
+                float modifiedThreatSignificance = EffectiveTotalThreatSignificance < 1 ? EffectiveTotalThreatSignificance : Mathf.Sqrt(EffectiveTotalThreatSignificance);
                 return ((modifiedThreatSignificance * Props.targetSeverityPerTotalThreatSignificance) + (recentPainFelt * Props.targetSeverityPerRecentPainFelt)) * AdrenalineTracker.AdrenalineProductionFactor;
             }
         }
 
-        protected virtual float SeverityGainFactor => (Mathf.Sqrt(totalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)) * AdrenalineTracker.AdrenalineProductionFactor;
+        protected virtual float SeverityGainFactor => (Mathf.Sqrt(EffectiveTotalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)) * pawn.GetStatValue(A_StatDefOf.AdrenalineProduction);
 
-        protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(totalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)))
+        protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(EffectiveTotalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)))
             + Mathf.Max(0, 1 - AdrenalineTracker.AdrenalineProductionFactor)) * ExtraRaceProps.adrenalineLossFactor;
         #endregion
 
@@ -52,7 +55,7 @@ namespace Adrenaline
             severityLossDelayTicks -= Mathf.Min(severityLossDelayTicks, SeverityUpdateIntervalTicks);
 
             // Update adrenaline tracker
-            AdrenalineTracker.CumulativeAdrenalineRushSeverity += Severity * SeverityUpdateIntervalTicks;
+            AdrenalineTracker.AdrenalineProduced += SeverityGainFactor * SeverityUpdateIntervalTicks;
             
         }
 
@@ -74,10 +77,11 @@ namespace Adrenaline
         {
             var debugBuilder = new StringBuilder();
             debugBuilder.AppendLine($"target severity: {TargetSeverity}".Indented());
-            debugBuilder.AppendLine($"total threat significance: {totalThreatSignificance}".Indented().Indented());
+            debugBuilder.AppendLine($"total threat significance: {EffectiveTotalThreatSignificance} ({totalThreatSignificance})".Indented().Indented());
             debugBuilder.AppendLine($"recent pain felt: {recentPainFelt}".Indented().Indented());
             debugBuilder.AppendLine($"severity gain factor: {SeverityGainFactor}".Indented());
             debugBuilder.AppendLine($"severity loss factor: {SeverityLossFactor}".Indented());
+            debugBuilder.AppendLine($"severity loss delay: {severityLossDelayTicks}".Indented());
             debugBuilder.AppendLine(base.DebugString());
             return debugBuilder.ToString();
         }

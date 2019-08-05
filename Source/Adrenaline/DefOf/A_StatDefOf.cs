@@ -12,10 +12,10 @@ namespace Adrenaline
 {
 
     [DefOf]
-    public static class A_TraitDefOf
+    public static class A_StatDefOf
     {
 
-        public static TraitDef AdrenalineJunkie;
+        public static StatDef AdrenalineProduction;
 
     }
 

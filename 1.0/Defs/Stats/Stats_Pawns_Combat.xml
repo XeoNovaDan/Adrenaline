@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <StatDef>
+        <defName>AdrenalineProduction</defName>
+        <workerClass>Adrenaline.StatWorker_AdrenalineProduction</workerClass>
+        <label>adrenaline production</label>
+        <description>The pawn's current capacity to produce adrenaline. Affects how quickly an adrenaline rush comes on and how intense it gets.</description>
+        <category>PawnCombat</category>
+        <displayPriorityInCategory>1000</displayPriorityInCategory>
+        <minValue>0</minValue>
+        <toStringStyle>PercentOne</toStringStyle>
+    </StatDef>
+
+</Defs>

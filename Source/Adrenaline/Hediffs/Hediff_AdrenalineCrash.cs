@@ -18,6 +18,7 @@ namespace Adrenaline
         public int ticksToSeverityGain;
         protected float _targetSeverityUnclamped;
         protected int ticksAtTargetSeverity;
+        protected bool severityFalling;
         #endregion
 
         #region Properties
@@ -47,7 +48,10 @@ namespace Adrenaline
         {
             // Increase the target severity based on the adrenaline rush's severity
             if (AdrenalineRushHediff != null)
-                TargetSeverityUnclamped += AdrenalineRushHediff.Severity * Props.targetSeverityGainPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks; // Factor in time 
+            {
+                severityFalling = false;
+                TargetSeverityUnclamped += AdrenalineRushHediff.Severity * Props.targetSeverityGainPerAdrenalineRushHediffSeverityPerHour / GenDate.TicksPerHour * SeverityUpdateIntervalTicks;
+            }
 
             // If there's a delay in effect, count down the ticks until severity can increase
             if (ticksToSeverityGain > 0)
@@ -60,9 +64,10 @@ namespace Adrenaline
             // Otherwise if it's been a certain amount of time since target severity was hit, drop severity
             else
             {
-                if (ticksAtTargetSeverity >= (int)(Props.baseTicksAtPeakSeverityBeforeSeverityLoss * Severity))
+                if (ticksAtTargetSeverity >= (int)(Props.baseTicksAtPeakSeverityBeforeSeverityLoss * Severity) || severityFalling)
                 {
-                    ticksAtTargetSeverity -= Mathf.Min(ticksAtTargetSeverity, SeverityUpdateIntervalTicks);
+                    severityFalling = true;
+                    ticksAtTargetSeverity -= Mathf.Min(ticksAtTargetSeverity, SeverityUpdateIntervalTicks / 2);
                     Severity -= Props.baseSeverityLossPerDay / GenDate.TicksPerDay * SeverityUpdateIntervalTicks;
                     TargetSeverityUnclamped = Severity;
                 }
@@ -78,6 +83,7 @@ namespace Adrenaline
             debugBuilder.AppendLine($"ticksToSeverityGain: {ticksToSeverityGain}".Indented());
             debugBuilder.AppendLine($"unclamped target severity: {TargetSeverityUnclamped}".Indented());
             debugBuilder.AppendLine($"ticks at target severity: {ticksAtTargetSeverity}".Indented());
+            debugBuilder.AppendLine($"severityFalling: {severityFalling}".Indented());
             debugBuilder.AppendLine(base.DebugString());
             return debugBuilder.ToString();
         }
@@ -87,6 +93,7 @@ namespace Adrenaline
             Scribe_Values.Look(ref ticksToSeverityGain, "ticksToSeverityGain");
             Scribe_Values.Look(ref _targetSeverityUnclamped, "targetSeverityUnclamped");
             Scribe_Values.Look(ref ticksAtTargetSeverity, "ticksAtTargetSeverity");
+            Scribe_Values.Look(ref severityFalling, "severityFalling");
 
             base.ExposeData();
         }

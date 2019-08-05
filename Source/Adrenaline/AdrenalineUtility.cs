@@ -129,9 +129,9 @@ namespace Adrenaline
                     threatSignificance /= 2;
             }
 
-            // If pawn is attacking p but p isn't attacking pawn, reduce significance by 2/3
+            // If pawn is attacking p but p isn't attacking pawn, reduce significance by 5/6
             if (p != null && pawn.IsAttacking(p) && !p.IsAttacking(pawn))
-                threatSignificance /= 3;
+                threatSignificance /= 6;
 
             return threatSignificance;
         }

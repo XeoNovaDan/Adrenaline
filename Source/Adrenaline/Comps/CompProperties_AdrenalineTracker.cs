@@ -19,8 +19,8 @@ namespace Adrenaline
             compClass = typeof(CompAdrenalineTracker);
         }
 
-        public float maxCumulativeAdrenalineRushSeverity = 5000;
-        public float cumulativeAdrenalineRushSeverityFallPerDay = 3200;
+        public float adrenalineProductionCapacity = 10000;
+        public float adrenalineProductionRecoveryPerDay = 6400;
 
     }
 
