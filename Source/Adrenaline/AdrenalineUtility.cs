@@ -51,6 +51,10 @@ namespace Adrenaline
 
         public static bool IsPerceivedThreatBy(this Thing t, Pawn pawn)
         {
+            // Bandaid solution attempt to fix a null reference exception -- will need to a more proper fix at some point in the future
+            if (t == null || pawn == null)
+                return false;
+
             // Not spawned, fogged, too far away from the pawn in question or cannot see them
             if (!t.Spawned || t.Position.Fogged(t.Map) || pawn.Position.DistanceTo(t.Position) > BasePerceivedThreatDistance * pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight) || !AttackTargetFinder.CanSee(pawn, t))
                 return false;
