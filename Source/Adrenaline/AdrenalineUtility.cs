@@ -80,6 +80,10 @@ namespace Adrenaline
                     if (mannableComp != null && !mannableComp.MannedNow)
                         return false;
 
+                    // No verb (Misc. TurretBases compatibility)
+                    if (turret.CurrentEffectiveVerb == null)
+                        return false;
+
                     return turret.CurrentEffectiveVerb.Available() && turret.HostileTo(pawn);
                 }
             }
