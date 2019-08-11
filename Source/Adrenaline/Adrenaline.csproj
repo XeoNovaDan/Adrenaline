@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefOf\A_StatDefOf.cs" />
+    <Compile Include="HarmonyPatches\Patch_HealthUtility.cs" />
     <Compile Include="StatWorker_AdrenalineProduction.cs" />
     <Compile Include="Comps\CompProperties_AdrenalineTracker.cs" />
     <Compile Include="Comps\CompAdrenalineTracker.cs" />

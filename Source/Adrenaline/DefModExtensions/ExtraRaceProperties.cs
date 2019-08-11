@@ -33,7 +33,7 @@ namespace Adrenaline
             get
             {
                 if (_relevantConsumables == null)
-                    _relevantConsumables = DefDatabase<ThingDef>.AllDefs.Where(t => t.IsDrug && t.ingestible.outcomeDoers.Any(o => o is IngestionOutcomeDoer_Adrenaline adrenalineOutcome && adrenalineOutcome.hediffDef == adrenalineRushHediff)).ToList();
+                    _relevantConsumables = DefDatabase<ThingDef>.AllDefs.Where(t => t.IsDrug && t.ingestible.outcomeDoers is List<IngestionOutcomeDoer> outcomeDoers && outcomeDoers.Any(o => o is IngestionOutcomeDoer_Adrenaline adrenalineOutcome && adrenalineOutcome.hediffDef == adrenalineRushHediff)).ToList();
                 return _relevantConsumables;
             }
         }
