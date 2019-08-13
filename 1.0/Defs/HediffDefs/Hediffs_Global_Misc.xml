@@ -121,7 +121,7 @@
                 <hediffGivers>
                     <li Class="HediffGiver_Random">
                         <hediff>HeartAttack</hediff>
-                        <mtbDays>1.7</mtbDays>
+                        <mtbDays>5.1</mtbDays>
                         <partsToAffect>
                             <li>Heart</li>
                         </partsToAffect>
