@@ -11,12 +11,13 @@
         <stages>
 
             <li>
-                <label>slight</label>
+                <label>negligible</label>
                 <becomeVisible>false</becomeVisible>
             </li>
 
             <li>
                 <label>slight</label>
+                <minSeverity>0.05</minSeverity>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>

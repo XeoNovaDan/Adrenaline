@@ -34,7 +34,17 @@ namespace Adrenaline
             }
         }
 
-        protected virtual float SeverityGainFactor => (Mathf.Sqrt(EffectiveTotalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)) * pawn.GetStatValue(A_StatDefOf.AdrenalineProduction);
+        protected virtual float SeverityGainFactor
+        {
+            get
+            {
+                float baseFactor = (Mathf.Sqrt(EffectiveTotalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt));
+                float adrenalineProduction = pawn.GetStatValue(A_StatDefOf.AdrenalineProduction);
+
+                // Cube root adrenaline production when below 1 to speed up the rate at which the stat drops
+                return (adrenalineProduction < 1) ? baseFactor * Mathf.Pow(adrenalineProduction, 1f / 3) : baseFactor * adrenalineProduction;
+            }
+        }
 
         protected virtual float SeverityLossFactor => ((1 / Mathf.Max(1, Mathf.Sqrt(EffectiveTotalThreatSignificance) + (recentPainFelt * Props.severityGainFactorOffsetPerRecentPainFelt)))
             + Mathf.Max(0, 1 - AdrenalineTracker.AdrenalineProductionFactor)) * ExtraRaceProps.adrenalineLossFactor;

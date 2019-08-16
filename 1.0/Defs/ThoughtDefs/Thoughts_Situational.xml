@@ -13,7 +13,7 @@
         <stages>
 
             <li>
-                <label>slight adrenaline rush</label>
+                <label>negligible adrenaline rush</label>
                 <baseMoodEffect>0</baseMoodEffect>
                 <visible>false</visible>
             </li>
