@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manifest>
     <identifier>Adrenaline</identifier>
-    <version>1.0.5.0</version>
+    <version>1.0.6.0</version>
     <manifestUri>https://cdn.jsdelivr.net/gh/XeoNovaDan/Adrenaline@master/About/Manifest.xml</manifestUri>
     <downloadUri>https://github.com/XeoNovaDan/Adrenaline/releases</downloadUri>
 </Manifest>

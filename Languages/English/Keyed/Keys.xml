@@ -6,4 +6,9 @@
     <!-- StatParts -->
     <Adrenaline.StatsReport_RecentlyProducedAdrenaline>Recent production</Adrenaline.StatsReport_RecentlyProducedAdrenaline>
 
+    <!-- Settings -->
+    <Adrenaline.SettingsCategory>Adrenaline</Adrenaline.SettingsCategory>
+    <Adrenaline.AffectDownedPawns>Affect downed pawns</Adrenaline.AffectDownedPawns>
+    <Adrenaline.AffectDownedPawns_ToolTip>Determines whether or not a pawn still naturally gains adrenaline when they are downed.</Adrenaline.AffectDownedPawns_ToolTip>
+
 </LanguageData>

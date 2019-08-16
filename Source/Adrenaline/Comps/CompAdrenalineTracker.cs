@@ -34,7 +34,15 @@ namespace Adrenaline
             }
         }
 
-        public float AdrenalineProductionFactor => Mathf.Max(1 - AdrenalineProduced / Props.adrenalineProductionCapacity, 0);
+        public float AdrenalineProductionFactor
+        {
+            get
+            {
+                if (Pawn.Downed && !AdrenalineSettings.affectDownedPawns)
+                    return 0;
+                return Mathf.Max(1 - AdrenalineProduced / Props.adrenalineProductionCapacity, 0);
+            }
+        }
 
         public bool CanProduceAdrenaline => parent.GetStatValue(A_StatDefOf.AdrenalineProduction) > ProductionFactorThreshold;
 

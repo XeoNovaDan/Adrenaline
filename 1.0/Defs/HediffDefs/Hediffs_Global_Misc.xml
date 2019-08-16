@@ -12,6 +12,11 @@
 
             <li>
                 <label>slight</label>
+                <becomeVisible>false</becomeVisible>
+            </li>
+
+            <li>
+                <label>slight</label>
                 <capMods>
                     <li>
                         <capacity>BloodPumping</capacity>
@@ -141,6 +146,9 @@
                     <baseSeverityLossPerDay>40.8</baseSeverityLossPerDay> <!-- 1.7 per hour -->
                 </adrenalineRush>
                 <stages>
+
+                    <li/>
+
                     <!-- Slight -->
                     <li>
                         <meleeDamageFactor>1.05</meleeDamageFactor>
@@ -250,8 +258,8 @@
                     <targetSeverityGainPerAdrenalineRushHediffSeverityPerHour>0.5</targetSeverityGainPerAdrenalineRushHediffSeverityPerHour>
                     <severityGainDelay>2500</severityGainDelay>
                     <baseSeverityGainPerDay>3</baseSeverityGainPerDay>
-                    <baseTicksAtPeakSeverityBeforeSeverityLoss>20000</baseTicksAtPeakSeverityBeforeSeverityLoss>
-                    <baseSeverityLossPerDay>0.7</baseSeverityLossPerDay>
+                    <baseTicksAtPeakSeverityBeforeSeverityLoss>15000</baseTicksAtPeakSeverityBeforeSeverityLoss>
+                    <baseSeverityLossPerDay>0.9</baseSeverityLossPerDay>
                 </adrenalineCrash>
             </li>
         </modExtensions>

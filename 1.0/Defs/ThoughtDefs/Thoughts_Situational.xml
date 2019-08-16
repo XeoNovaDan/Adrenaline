@@ -14,6 +14,12 @@
 
             <li>
                 <label>slight adrenaline rush</label>
+                <baseMoodEffect>0</baseMoodEffect>
+                <visible>false</visible>
+            </li>
+
+            <li>
+                <label>slight adrenaline rush</label>
                 <description>My heart's starting to get pumping and I'm raring to go.</description>
                 <baseMoodEffect>4</baseMoodEffect>
             </li>
