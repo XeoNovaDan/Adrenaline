@@ -18,4 +18,7 @@
     <Adrenaline.AllowAdrenalineCrashes>Allow adrenaline crashes</Adrenaline.AllowAdrenalineCrashes>
     <Adrenaline.AllowAdrenalineCrashes_ToolTip>Determines whether or not pawns get adrenaline crashes after adrenaline rushes - a short-term penalty that primarily reduces the pawn's consciousness.</Adrenaline.AllowAdrenalineCrashes_ToolTip>
 
+    <Adrenaline.AllowNPCUse>Allow NPC use</Adrenaline.AllowNPCUse>
+    <Adrenaline.AllowNPCUse_ToolTip>Determines whether or not NPCs (e.g. raiders) can inject nearby adrenaline syringes whenever they have been downed.</Adrenaline.AllowNPCUse_ToolTip>
+
 </LanguageData>

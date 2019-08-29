@@ -23,19 +23,22 @@ namespace Adrenaline
 
             public static void Postfix(Pawn_MindState __instance)
             {
-                var pawn = __instance.pawn;
-                // Try to inject nearby adrenaline items if the pawn is downed, not a player pawn, is at least a tooluser, is capable of manipulation and moving, and can gain an adrelaine hediff
-                if (pawn.IsHashIntervalTick(60) && pawn.Downed && pawn.Faction != Faction.OfPlayer && pawn.RaceProps.intelligence >= Intelligence.ToolUser &&
-                    pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Moving))
+                if (AdrenalineSettings.npcUse)
                 {
-                    var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
-                    if (extraRaceProps.adrenalineRushHediff != null)
+                    var pawn = __instance.pawn;
+                    // Try to inject nearby adrenaline items if the pawn is downed, not a player pawn, is at least a tooluser, is capable of manipulation and moving, and can gain an adrelaine hediff
+                    if (pawn.IsHashIntervalTick(60) && pawn.Downed && pawn.Faction != Faction.OfPlayer && pawn.RaceProps.intelligence >= Intelligence.ToolUser &&
+                        pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Moving))
                     {
-                        var adrenalineHediff = pawn.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff);
-                        if ((adrenalineHediff == null || adrenalineHediff.CurStageIndex < adrenalineHediff.def.stages.Count - 1) &&
-                            AdrenalineUtility.AnyNearbyAdrenaline(pawn, extraRaceProps.RelevantConsumablesDowned, out List<Thing> adrenalineThings))
+                        var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
+                        if (extraRaceProps.adrenalineRushHediff != null)
                         {
-                            adrenalineThings.First().Ingested(pawn, 0);
+                            var adrenalineHediff = pawn.health.hediffSet.GetFirstHediffOfDef(extraRaceProps.adrenalineRushHediff);
+                            if ((adrenalineHediff == null || adrenalineHediff.CurStageIndex < adrenalineHediff.def.stages.Count - 1) &&
+                                AdrenalineUtility.AnyNearbyAdrenaline(pawn, extraRaceProps.RelevantConsumablesDowned, out List<Thing> adrenalineThings))
+                            {
+                                adrenalineThings.First().Ingested(pawn, 0);
+                            }
                         }
                     }
                 }
