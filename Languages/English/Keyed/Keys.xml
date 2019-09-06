@@ -12,6 +12,9 @@
     <Adrenaline.AllowNaturalGain>Allow natural gain</Adrenaline.AllowNaturalGain>
     <Adrenaline.AllowNaturalGain_ToolTip>Determines whether or not pawns naturally gain adrenaline in combat or when taking damage.</Adrenaline.AllowNaturalGain_ToolTip>
 
+    <Adrenaline.AffectAnimals>Affect animals</Adrenaline.AffectAnimals>
+    <Adrenaline.AffectAnimals_ToolTip>Determines whether or not animals can gain adrenaline.</Adrenaline.AffectAnimals_ToolTip>
+
     <Adrenaline.AffectDownedPawns>Affect downed pawns</Adrenaline.AffectDownedPawns>
     <Adrenaline.AffectDownedPawns_ToolTip>Determines whether or not a pawn still naturally gains adrenaline when they are downed.</Adrenaline.AffectDownedPawns_ToolTip>
 

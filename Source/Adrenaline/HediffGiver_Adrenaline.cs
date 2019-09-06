@@ -24,7 +24,7 @@ namespace Adrenaline
                 bool hasRush = pawn.health.hediffSet.HasHediff(extraRaceProps.adrenalineRushHediff);
 
                 // If the pawn can produce adrenaline and doesn't already have an adrenaline rush, add adrenaline rush
-                if (AdrenalineSettings.allowNaturalGain && adrenalineTracker.CanProduceAdrenaline && !hasRush && AdrenalineUtility.GetPerceivedThreatsFor(pawn).Any())
+                if (AdrenalineSettings.allowNaturalGain && (AdrenalineSettings.affectAnimals || !pawn.RaceProps.Animal) && adrenalineTracker.CanProduceAdrenaline && !hasRush && AdrenalineUtility.GetPerceivedThreatsFor(pawn).Any())
                 {
                     TryTeachAdrenalineConcept(pawn);
                     pawn.health.AddHediff(extraRaceProps.adrenalineRushHediff);
