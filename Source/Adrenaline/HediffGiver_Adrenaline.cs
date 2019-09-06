@@ -43,7 +43,7 @@ namespace Adrenaline
 
         public override bool OnHediffAdded(Pawn pawn, Hediff hediff)
         {
-            if (AdrenalineSettings.allowNaturalGain)
+            if (AdrenalineSettings.allowNaturalGain && (AdrenalineSettings.affectAnimals || !pawn.RaceProps.Animal))
             {
                 var extraRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>() ?? ExtendedRaceProperties.defaultValues;
                 if (extraRaceProps.HasAdrenaline)
