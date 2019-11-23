@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Adrenaline.label>肾上腺素上升</Adrenaline.label>
+  <Adrenaline.stages.0.label>微弱</Adrenaline.stages.0.label>
+  <Adrenaline.stages.1.label>轻微</Adrenaline.stages.1.label>
+  <Adrenaline.stages.2.label>一般</Adrenaline.stages.2.label>
+  <Adrenaline.stages.3.label>剧烈</Adrenaline.stages.3.label>
+  <Adrenaline.stages.4.label>极重</Adrenaline.stages.4.label>
+
+  <AdrenalineCrash.label>肾上腺素紊乱</AdrenalineCrash.label>
+  <AdrenalineCrash.stages.0.label>微弱</AdrenalineCrash.stages.0.label>
+  <AdrenalineCrash.stages.1.label>轻微</AdrenalineCrash.stages.1.label>
+  <AdrenalineCrash.stages.2.label>一般</AdrenalineCrash.stages.2.label>
+  <AdrenalineCrash.stages.3.label>严重</AdrenalineCrash.stages.3.label>
+  <AdrenalineCrash.stages.4.label>极重</AdrenalineCrash.stages.4.label>
+
+
+</LanguageData>

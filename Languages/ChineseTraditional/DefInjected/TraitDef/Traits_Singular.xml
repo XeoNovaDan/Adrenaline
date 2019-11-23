@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <AdrenalineJunkie.degreeDatas.0.label>肾上腺素成瘾</AdrenalineJunkie.degreeDatas.0.label>
+  <AdrenalineJunkie.degreeDatas.0.description>{PAWN_nameDef} 爱上了这种感觉。{PAWN_pronoun} 享受肾上腺素淌过血管的感觉，并从中获得快感。</AdrenalineJunkie.degreeDatas.0.description>
+
+  <CoolHeaded.degreeDatas.0.label>沉着冷静</CoolHeaded.degreeDatas.0.label>
+  <CoolHeaded.degreeDatas.0.description>{PAWN_nameDef} 偏向于在激烈状况时保持头脑冷静，通常情况下他们的肾上腺素含量不会提高。</CoolHeaded.degreeDatas.0.description>
+
+
+</LanguageData>

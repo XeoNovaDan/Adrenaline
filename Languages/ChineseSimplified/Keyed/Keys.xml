@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Gizmos -->
+  <Adrenaline.Command_TakeAdrenaline_FailNoManipulation>{0} 无能力获取肾上腺素。</Adrenaline.Command_TakeAdrenaline_FailNoManipulation>
+
+  <!-- StatParts -->
+  <Adrenaline.StatsReport_RecentlyProducedAdrenaline>近期产物</Adrenaline.StatsReport_RecentlyProducedAdrenaline>
+
+  <!-- Settings -->
+  <Adrenaline.SettingsCategory>肾上腺素</Adrenaline.SettingsCategory>
+
+  <Adrenaline.AllowNaturalGain>允许自然分泌</Adrenaline.AllowNaturalGain>
+  <Adrenaline.AllowNaturalGain_ToolTip>该选项决定了生物体处于战斗或造成、受到伤害时体内是否自动分泌肾上腺素。</Adrenaline.AllowNaturalGain_ToolTip>
+
+  <Adrenaline.AffectAnimals>作用于动物</Adrenaline.AffectAnimals>
+  <Adrenaline.AffectAnimals_ToolTip>该选项决定了动物能否获得肾上腺素。</Adrenaline.AffectAnimals_ToolTip>
+
+  <Adrenaline.AffectDownedPawns>作用于倒地生物体</Adrenaline.AffectDownedPawns>
+  <Adrenaline.AffectDownedPawns_ToolTip>该选项决定了当生物体倒地时是否继续自动分泌肾上腺素。</Adrenaline.AffectDownedPawns_ToolTip>
+
+  <Adrenaline.AllowAdrenalineCrashes>出现肾上腺素紊乱</Adrenaline.AllowAdrenalineCrashes>
+  <Adrenaline.AllowAdrenalineCrashes_ToolTip>该选项决定了生物体是否在肾上腺素上升后获得肾上腺素紊乱 - 短期惩罚，主要降低生物体意识。</Adrenaline.AllowAdrenalineCrashes_ToolTip>
+
+  <Adrenaline.AllowNPCUse>允许NPC使用</Adrenaline.AllowNPCUse>
+  <Adrenaline.AllowNPCUse_ToolTip>该选项决定了NPC们(如袭击者)无论倒地与否，能否注射附近的肾上腺素。</Adrenaline.AllowNPCUse_ToolTip>
+
+</LanguageData>
