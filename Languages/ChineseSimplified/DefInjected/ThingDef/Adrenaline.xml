@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Adrenaline.label>肾上腺素</Adrenaline.label>
+  <Adrenaline.description>肾上腺素是当生物体处于战斗或逃跑状态时释放的代表性激素 - 但也只会在这种情况下分泌。肾上腺素主要效果为促进血液流向肌肉并减轻使用者的疼痛感。\n\n肾上腺素过量可能会导致心脏梗塞。</Adrenaline.description>
+  <Adrenaline.ingestible.ingestCommandString>注射 {0}</Adrenaline.ingestible.ingestCommandString>
+  <Adrenaline.ingestible.ingestReportString>正在注射 {0}。</Adrenaline.ingestible.ingestReportString>
+
+
+</LanguageData>
